@@ -9,7 +9,9 @@
     "test": "ng test",
     "lint": "ng lint",
     "format": "prettier --write \"src/**/*.{ts,html,scss}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,html,scss}\""
+    "format:check": "prettier --check \"src/**/*.{ts,html,scss}\"",
+    "test:ci": "ng test --watch=false --browsers=ChromeHeadless --code-coverage",
+    "verify": "npm run lint && npm run format:check && npm run test:ci && npm run build"
   },
   "private": true,
   "dependencies": {

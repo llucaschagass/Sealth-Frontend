@@ -77,6 +77,39 @@ describe('TextFieldComponent', () => {
     expect(error()?.textContent).toContain('E-mail já cadastrado');
   });
 
+  it('traduz cada tipo de erro para uma mensagem em português', () => {
+    const cases: [Record<string, unknown>, string][] = [
+      [{ minlength: { requiredLength: 6, actualLength: 2 } }, 'Mínimo de 6 caracteres'],
+      [{ mismatch: true }, 'As senhas não coincidem'],
+      [{ number: true }, 'Informe um número'],
+      [{ range: { min: 20, max: 400 } }, 'Informe um valor entre 20 e 400'],
+      [{ algoNaoMapeado: true }, 'Valor inválido'],
+    ];
+    host.control.markAsTouched();
+
+    for (const [errors, message] of cases) {
+      host.control.setErrors(errors);
+      fixture.detectChanges();
+
+      expect(error()?.textContent).withContext(message).toContain(message);
+    }
+  });
+
+  it('mostra o erro assim que o usuário altera o campo, mesmo sem sair dele', () => {
+    host.control.setValue('x');
+    host.control.markAsDirty();
+    fixture.detectChanges();
+
+    expect(error()).not.toBeNull();
+  });
+
+  it('trata valor nulo do controle como campo vazio', () => {
+    host.control.setValue(null);
+    fixture.detectChanges();
+
+    expect(input().value).toBe('');
+  });
+
   it('respeita o estado desabilitado do controle', () => {
     host.control.disable();
     fixture.detectChanges();

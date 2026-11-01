@@ -184,7 +184,82 @@ describe('AppointmentsComponent', () => {
     });
   });
 
+  describe('diálogos', () => {
+    const openDialogs = () => element().querySelectorAll('dialog[open]').length;
+    const headings = () =>
+      Array.from(element().querySelectorAll('dialog h2')).map((h) => h.textContent?.trim());
+
+    it('o título do formulário muda entre criar e editar', () => {
+      const existing = appointment(1, daysFromNow(3));
+      create([existing]);
+
+      component.openCreate();
+      fixture.detectChanges();
+      expect(headings()).toContain('Nova consulta');
+
+      component.closeForm();
+      component.openEdit(existing);
+      fixture.detectChanges();
+      expect(headings()).toContain('Editar consulta');
+    });
+
+    it('abre e fecha o formulário', () => {
+      create([]);
+
+      component.openCreate();
+      expect(openDialogs()).toBe(1);
+
+      component.closeForm();
+      expect(openDialogs()).toBe(0);
+    });
+
+    it('abre e fecha a confirmação de cancelamento', () => {
+      const target = appointment(1, daysFromNow(3));
+      create([target]);
+
+      component.askCancel(target);
+      expect(openDialogs()).toBe(1);
+
+      component.closeCancel();
+      expect(openDialogs()).toBe(0);
+    });
+
+    it('limpa erros antigos ao reabrir o formulário', () => {
+      create([]);
+      component.formError.set('erro antigo');
+
+      component.openCreate();
+
+      expect(component.formError()).toBeNull();
+    });
+  });
+
+  describe('falhas ao editar', () => {
+    it('mostra o erro do backend e preserva a lista', () => {
+      const existing = appointment(1, daysFromNow(3));
+      create([existing]);
+      component.openEdit(existing);
+      service.updateAppointment.and.returnValue(
+        throwError(() => ({ status: 404, message: 'Consulta não encontrada' })),
+      );
+
+      component.save();
+
+      expect(component.formError()).toBe('Consulta não encontrada');
+      expect(component.appointments()).toEqual([existing]);
+      expect(component.saving()).toBeFalse();
+    });
+  });
+
   describe('cancelar', () => {
+    it('não chama a API se nenhuma consulta foi escolhida', () => {
+      create([appointment(1, daysFromNow(3))]);
+
+      component.confirmCancel();
+
+      expect(service.cancelAppointment).not.toHaveBeenCalled();
+    });
+
     it('só remove depois da confirmação', () => {
       const target = appointment(1, daysFromNow(3));
       create([target]);

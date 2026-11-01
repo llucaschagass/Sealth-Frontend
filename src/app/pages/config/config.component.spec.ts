@@ -44,6 +44,19 @@ describe('ConfigComponent', () => {
     });
   });
 
+  it('mostra o erro e libera a tela quando os dados não carregam', () => {
+    userService.getUserData.and.returnValue(
+      throwError(() => ({ status: 0, message: 'Sem conexão.' })),
+    );
+    const failed = TestBed.createComponent(ConfigComponent);
+    failed.detectChanges();
+
+    expect(failed.componentInstance.loading()).toBeFalse();
+    expect(failed.nativeElement.querySelector('.alert--danger')?.textContent).toContain(
+      'Sem conexão.',
+    );
+  });
+
   it('avisa quando não há nada para salvar e não chama a API', () => {
     component.submit();
 
