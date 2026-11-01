@@ -17,11 +17,10 @@
   <ng-content />
 </main>
 
-<dialog #logoutDialog class="dialog" aria-labelledby="logout-title" (click)="onDialogClick($event)">
-  <h2 id="logout-title">Deseja realmente sair?</h2>
-  <p>Você precisará entrar novamente para acessar suas informações.</p>
-  <div class="dialog__actions">
+<app-modal #logoutModal heading="Deseja realmente sair?">
+  <p class="modal-text">Você precisará entrar novamente para acessar suas informações.</p>
+  <div class="modal-actions">
     <button type="button" class="btn btn--secondary" (click)="closeLogout()">Cancelar</button>
     <button type="button" class="btn btn--primary" (click)="confirmLogout()">Sair</button>
   </div>
-</dialog>
+</app-modal>

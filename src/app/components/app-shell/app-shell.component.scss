@@ -1,21 +1,5 @@
 @use '../../../styles/mixins' as *;
 
-.skip-link {
-  position: absolute;
-  inset-block-start: var(--space-2);
-  inset-inline-start: var(--space-2);
-  z-index: 10;
-  padding: var(--space-2) var(--space-4);
-  background: var(--color-primary);
-  border-radius: var(--radius-sm);
-  color: var(--color-on-primary);
-  transform: translateY(-200%);
-
-  &:focus {
-    transform: none;
-  }
-}
-
 .shell {
   &__header {
     position: sticky;
@@ -69,29 +53,5 @@
     &:focus {
       outline: none;
     }
-  }
-}
-
-.dialog {
-  width: min(24rem, calc(100% - 2rem));
-  margin: auto;
-  padding: var(--space-5);
-  border: 0;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-
-  &::backdrop {
-    background: rgb(20 35 28 / 50%);
-  }
-
-  p {
-    margin-block: var(--space-2) var(--space-5);
-    color: var(--color-text-muted);
-  }
-
-  &__actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: var(--space-3);
   }
 }

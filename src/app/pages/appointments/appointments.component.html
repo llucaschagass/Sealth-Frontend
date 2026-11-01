@@ -1,42 +1,103 @@
-<header class="appointments-header">
-    <img src="/assets/images/brand/logo.webp" alt="" class="logo" (click)="redirectToHome()">
-    <div class="title-container">
-        <h1 class="title">Minhas Consultas</h1>
-    </div>
-    
-    <div class="overlay">
-        <img src="/assets/images/icons/user.webp" alt="User Icon" (click)="confirmLogout()">
-        <h1>Olá {{ username }}</h1>
-    </div>
-    
-</header>
+<app-shell title="Minhas consultas">
+  <div class="toolbar">
+    <p class="intro">Registre e acompanhe seus atendimentos médicos.</p>
+    <button type="button" class="btn btn--primary" (click)="openCreate()">
+      <app-icon name="plus" /> Nova consulta
+    </button>
+  </div>
 
-<div class="main-container">
-    <div class="calendar-container">
-        <div class="appointments-module">
-            <h2 class="module-title">Consultas Marcadas</h2>
-            <ul class="appointment-list">
-                <li *ngFor="let appointment of appointments" (click)="selectAppointment(appointment)">
-                    <p>Especialidade: {{ appointment.specialty }}</p>
-                    <p>Data: {{ appointment.date }}</p>
-                </li>
-            </ul>
-        </div>
-        <div class="buttons-container">
-            <button class="button" (click)="createAppointment()">Marcar</button>
-            <button class="button" (click)="cancelAppointment()">Cancelar</button>
-            <button class="button" (click)="updateAppointment()">Atualizar</button>
-        </div>
+  @if (loading()) {
+    <p class="state" role="status">Carregando consultas...</p>
+  } @else if (loadError()) {
+    <div class="alert alert--danger retry" role="alert">
+      <p>{{ loadError() }}</p>
+      <button type="button" class="btn btn--secondary" (click)="load()">Tentar novamente</button>
     </div>
-    <div class="appointments-container">
-        <div class="appointments-module-info">
-            <h2 class="module-title">Dados da Consulta</h2>
-            <div class="info-container">
-                <p class="info-extra">Médico: {{ selectedAppointment?.doctor }} </p>
-                <p class="info-extra">Especialidade: {{ selectedAppointment?.specialty }}</p>
-                <p class="info-extra">Data: {{ selectedAppointment?.date }}</p>
-                <p class="info-extra">Local: {{ selectedAppointment?.location }}</p>
-                <p class="info-extra">Informações Extras: {{ selectedAppointment?.extraInfo }}</p>
-        </div>
+  } @else if (appointments().length === 0) {
+    <div class="card empty">
+      <h2>Você ainda não tem consultas</h2>
+      <p>Cadastre a primeira para acompanhá-la por aqui.</p>
+      <button type="button" class="btn btn--primary" (click)="openCreate()">
+        Cadastrar consulta
+      </button>
     </div>
-</div>
+  } @else {
+    @if (groups().upcoming.length > 0) {
+      <section aria-labelledby="upcoming-title">
+        <h2 id="upcoming-title">Próximas consultas</h2>
+        <ul class="list">
+          @for (appointment of groups().upcoming; track appointment.id) {
+            <li>
+              <app-appointment-card
+                [appointment]="appointment"
+                (edit)="openEdit($event)"
+                (cancel)="askCancel($event)"
+              />
+            </li>
+          }
+        </ul>
+      </section>
+    }
+
+    @if (groups().past.length > 0) {
+      <section aria-labelledby="past-title">
+        <h2 id="past-title">Consultas anteriores</h2>
+        <ul class="list">
+          @for (appointment of groups().past; track appointment.id) {
+            <li>
+              <app-appointment-card
+                [appointment]="appointment"
+                [past]="true"
+                (edit)="openEdit($event)"
+                (cancel)="askCancel($event)"
+              />
+            </li>
+          }
+        </ul>
+      </section>
+    }
+  }
+
+  <app-modal #formModal [heading]="editing() ? 'Editar consulta' : 'Nova consulta'">
+    <form class="form-stack" [formGroup]="form" (ngSubmit)="save()" novalidate>
+      @if (formError()) {
+        <p class="alert alert--danger" role="alert">{{ formError() }}</p>
+      }
+      <app-text-field formControlName="date" type="date" label="Data" />
+      <app-text-field formControlName="doctor" label="Médico(a)" placeholder="Dra. Souza" />
+      <app-text-field formControlName="specialty" label="Especialidade" placeholder="Cardiologia" />
+      <app-text-field formControlName="location" label="Local (opcional)" />
+      <app-text-field formControlName="extraInfo" label="Observações (opcional)" />
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn--secondary" (click)="closeForm()">Cancelar</button>
+        <button type="submit" class="btn btn--primary" [disabled]="saving()">
+          {{ saving() ? 'Salvando...' : 'Salvar' }}
+        </button>
+      </div>
+    </form>
+  </app-modal>
+
+  <app-modal #cancelModal heading="Cancelar consulta?">
+    @if (toCancel(); as target) {
+      <p class="modal-text">
+        A consulta com <strong>{{ target.doctor }}</strong> em
+        <strong>{{ longDate(target.date) }}</strong> será removida.
+      </p>
+    }
+    @if (cancelError()) {
+      <p class="alert alert--danger" role="alert">{{ cancelError() }}</p>
+    }
+    <div class="modal-actions">
+      <button type="button" class="btn btn--secondary" (click)="closeCancel()">Manter</button>
+      <button
+        type="button"
+        class="btn btn--danger"
+        [disabled]="cancelling()"
+        (click)="confirmCancel()"
+      >
+        {{ cancelling() ? 'Cancelando...' : 'Cancelar consulta' }}
+      </button>
+    </div>
+  </app-modal>
+</app-shell>

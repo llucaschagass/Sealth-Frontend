@@ -59,6 +59,16 @@ describe('SessionService', () => {
     expect(localStorage.getItem('user-email')).toBeNull();
   });
 
+  it('updateName troca o nome exibido sem afetar o resto da sessão', () => {
+    service.start({ token: 't', id: 'u1', name: 'Maria Souza' });
+
+    service.updateName('Ana Lima');
+
+    expect(service.firstName).toBe('Ana');
+    expect(service.token).toBe('t');
+    expect(service.userId).toBe('u1');
+  });
+
   it('logout limpa a sessão e navega para o login', () => {
     service.start({ token: 't', id: 'u1', name: 'A' });
 

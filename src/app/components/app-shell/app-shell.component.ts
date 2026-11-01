@@ -1,19 +1,20 @@
-import { Component, ElementRef, Input, ViewChild, inject } from '@angular/core';
+import { Component, Input, ViewChild, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { LogoComponent } from '../logo/logo.component';
 import { SessionService } from '../../core/session.service';
+import { LogoComponent } from '../logo/logo.component';
+import { ModalComponent } from '../modal/modal.component';
 
 /** Moldura das telas autenticadas: cabeçalho com marca, título da página e saída da conta. */
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [RouterLink, LogoComponent],
+  imports: [RouterLink, LogoComponent, ModalComponent],
   templateUrl: './app-shell.component.html',
   styleUrl: './app-shell.component.scss',
 })
 export class AppShellComponent {
   @Input({ required: true }) title!: string;
-  @ViewChild('logoutDialog', { static: true }) private logoutDialog!: ElementRef<HTMLDialogElement>;
+  @ViewChild('logoutModal', { static: true }) private logoutModal!: ModalComponent;
 
   private readonly session = inject(SessionService);
 
@@ -22,22 +23,15 @@ export class AppShellComponent {
   }
 
   openLogout(): void {
-    this.logoutDialog.nativeElement.showModal();
+    this.logoutModal.open();
   }
 
   closeLogout(): void {
-    this.logoutDialog.nativeElement.close();
+    this.logoutModal.close();
   }
 
   confirmLogout(): void {
     this.closeLogout();
     this.session.logout();
-  }
-
-  /** Clique no backdrop (o próprio <dialog>) fecha o diálogo. */
-  onDialogClick(event: MouseEvent): void {
-    if (event.target === this.logoutDialog.nativeElement) {
-      this.closeLogout();
-    }
   }
 }

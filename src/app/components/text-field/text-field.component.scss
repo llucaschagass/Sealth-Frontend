@@ -31,6 +31,17 @@
     }
   }
 
+  &__suffix {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: var(--space-4);
+    display: flex;
+    align-items: center;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    pointer-events: none;
+  }
+
   &__toggle {
     position: absolute;
     inset-block: var(--space-1);

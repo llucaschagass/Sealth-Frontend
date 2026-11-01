@@ -1,212 +1,194 @@
-@import "../../../styles/variables.scss";
+@use '../../../styles/mixins' as *;
 
-body{
-  margin: 0;
-  padding: 0;
-}
-.header {
-    background-color: #f0f0f0;
-    padding: 20px;
+.topbar {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 5;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+
+  &__bar {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: center;
-  }
-  
-  .logo {
-    max-height: 150px;
-  }
-  
-  .menu {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-  }
-  
-  .menu li {
-    margin-right: 20px; 
-  }
-  
-  .menu li:last-child {
-    margin-right: 0; 
-  }
-  
-  .menu li a {
-    text-decoration: none;
-    color: #333;
-    font-weight: bold;
-  }
-  
-  .content img {
-    max-width: 25%;
-    height: auto; 
-  }
-  
-  .content p {
-    font-size: 25px; 
-    color: $secondary-color;
-  }
-  
-  .tagline {
-    font-size: 18px;
-    margin-bottom: 20px; 
-  }
-  
-  .start-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #046B46;
-    color: white;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-  }
-  
-  .start-button:hover {
-    background-color: #035c35;
+    gap: var(--space-5);
+    min-height: var(--header-height);
   }
 
-  .section {
-    height: 100vh; 
-    
-  }
-
-  #sobre {
-    display: flex; 
-    align-items: center; 
-  }
-  
-  #sobre .content {
-    flex: 1; 
-  }
-  
-  #sobre img {
-    max-width: 90%; 
-    height: auto; 
-    margin: 0; 
-}
-  
-  #sobre h2 {
-    font-size: 45px;
-    color: $primary-color; 
-    margin-bottom: 30px; 
-  }
-
-  #sobre p {
-    font-size: 22px; 
-    margin-right: 30px; 
-  }
-
-  #contato {
-    display: flex;
-    align-items: center;
-  }
-  
-  #contato h2 {
-    font-size: 45px;
-    color: $primary-color; 
-    margin-bottom: 30px;
-  }
-  
-  .contact-info {
+  &__nav {
+    display: none;
     flex: 1;
+    gap: var(--space-5);
+    justify-content: center;
+
+    a {
+      color: var(--color-text);
+      font-weight: var(--font-weight-medium);
+      text-decoration: none;
+
+      &:hover {
+        color: var(--color-primary);
+      }
+    }
+
+    @include up(sm) {
+      display: flex;
+    }
   }
-  
-  .contact-info p {
-    font-size: 22px;
-  }
-
-  #contato img {
-    max-width: 90%; 
-    height: auto; 
-    margin: 0; 
 }
 
-#servicos h2 {
-  font-size: 45px;
-  color: $primary-color; 
-  margin-bottom: 30px; 
-}
+.hero {
+  background: var(--color-primary-soft);
 
-#servicos p {
-  text-align: left; 
-  font-size: 16px; 
-  margin-bottom: 20px; 
-  margin-left: 30px;
-}
-.conteiner{
-  display: flex;
-  justify-content: start;
-  align-items: center;
-
-  
-  height: 100vh; 
-
-  margin-left: 1px;
-  margin-right: 50px;
-}
-
-.conteiner-text{
-  word-wrap: break-word;
-  display: inline-flex;
-  margin: 0;
-}
-
-.conteiner-img{
-
-  img{
-    max-width: 100%; 
-    height: 800px; 
-    margin: 0; 
-
-  }
-
-}
-
-.conteiner-contato{
-  display: flex;
-  justify-content: end;
-  align-items: center;
-
-  
-  height: 100vh; 
-  
-  margin-left: 1px;
-  margin-right: 1px;
-}
-.conteiner-inicio{
-    display: flex;
-    justify-content: space-between;
+  &__inner {
+    display: grid;
     align-items: center;
-    margin-left: 38%;
-    margin-right: 38%;
-  
+    gap: var(--space-6);
+    padding-block: var(--space-7);
 
-
-}
-
-.conteiner-inicio-img{
-  img{
-    max-width: 100%; 
-    height: 400px; 
-    margin: 0; 
-
+    @include up(md) {
+      grid-template-columns: 1.1fr 0.9fr;
+    }
   }
 
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+
+    h1 {
+      font-size: var(--font-size-xl);
+
+      @include up(md) {
+        font-size: var(--font-size-2xl);
+      }
+    }
+
+    p {
+      max-width: 34rem;
+      color: var(--color-text-muted);
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+  }
+
+  &__image {
+    width: 100%;
+    max-width: 26rem;
+    height: auto;
+    margin-inline: auto;
+    mix-blend-mode: multiply;
+  }
 }
 
+.section {
+  padding-block: var(--space-7);
+  scroll-margin-top: var(--header-height);
+  background: var(--color-surface);
 
+  &--tinted {
+    background: var(--color-bg);
+  }
 
-.quadro-button{
+  &__split {
+    display: grid;
+    align-items: center;
+    gap: var(--space-6);
+
+    @include up(md) {
+      grid-template-columns: 1fr 1.2fr;
+
+      &--reverse {
+        grid-template-columns: 1.2fr 1fr;
+
+        .section__figure {
+          order: 2;
+        }
+      }
+    }
+  }
+
+  &__figure {
+    width: 100%;
+    max-width: 26rem;
+    margin-inline: auto;
+    overflow: hidden;
+    background: var(--color-primary-soft);
+    border-radius: var(--radius-lg);
+  }
+
+  &__image {
+    width: 100%;
+    height: auto;
+    // as ilustrações têm fundo branco opaco; multiply as funde ao fundo do cartão
+    mix-blend-mode: multiply;
+  }
+
+  h2 {
+    margin-bottom: var(--space-5);
+    font-size: var(--font-size-xl);
+  }
+}
+
+.services {
+  display: grid;
+  gap: var(--space-5);
+  list-style: none;
+}
+
+.service {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  gap: var(--space-4);
+
+  &__icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    background: var(--color-primary-soft);
+    border-radius: var(--radius-md);
+    color: var(--color-primary);
+    --icon-size: 1.4rem;
+  }
+
+  h3 {
+    font-size: var(--font-size-md);
+  }
+
+  p {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+  }
 }
 
-.vaiza{
-  height: 50px;
-  width: 50px;
+.about {
+  color: var(--color-text-muted);
 }
 
+.contact {
+  display: grid;
+  gap: var(--space-1);
 
+  dt {
+    margin-top: var(--space-3);
+    font-weight: var(--font-weight-bold);
+  }
 
+  dd {
+    color: var(--color-text-muted);
+  }
+}
+
+.footer {
+  padding-block: var(--space-5);
+  background: var(--color-text);
+  color: var(--color-surface);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}

@@ -58,7 +58,7 @@ describe('TextFieldComponent', () => {
     expect(error()?.textContent).toContain('Campo obrigatório');
     expect(error()?.getAttribute('role')).toBe('alert');
     expect(input().getAttribute('aria-invalid')).toBe('true');
-    expect(input().getAttribute('aria-describedby')).toBe(error()?.id!);
+    expect(input().getAttribute('aria-describedby')).toBe(error()?.id ?? null);
   });
 
   it('traduz erros de validação conhecidos', () => {

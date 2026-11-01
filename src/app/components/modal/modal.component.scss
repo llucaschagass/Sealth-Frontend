@@ -1,0 +1,17 @@
+.modal {
+  width: min(28rem, calc(100% - 2rem));
+  max-height: calc(100% - 2rem);
+  margin: auto;
+  padding: var(--space-5);
+  border: 0;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+
+  &::backdrop {
+    background: rgb(20 35 28 / 50%);
+  }
+
+  &__title {
+    margin-bottom: var(--space-3);
+  }
+}

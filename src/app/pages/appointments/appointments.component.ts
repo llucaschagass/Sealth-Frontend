@@ -1,262 +1,181 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { SessionService } from '../../core/session.service';
-import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import Swal from 'sweetalert2';
+import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AppShellComponent } from '../../components/app-shell/app-shell.component';
+import { IconComponent } from '../../components/icon/icon.component';
+import { ModalComponent } from '../../components/modal/modal.component';
+import { TextFieldComponent } from '../../components/text-field/text-field.component';
+import { applyServerErrors } from '../../core/form-errors';
 import { AppointmentsService } from '../../services/appointments.service';
+import { ApiError } from '../../../types/api-error.type';
+import { Appointment, AppointmentRequest } from '../../../types/appointment.type';
+import { AppointmentCardComponent } from './appointment-card/appointment-card.component';
+import { groupAppointments, longDate } from './appointment-groups';
+
+interface AppointmentFormValue {
+  date: string;
+  doctor: string;
+  specialty: string;
+  location: string;
+  extraInfo: string;
+}
 
 @Component({
   selector: 'app-appointments',
   standalone: true,
   imports: [
-    CommonModule,
+    ReactiveFormsModule,
+    AppShellComponent,
+    AppointmentCardComponent,
+    IconComponent,
+    ModalComponent,
+    TextFieldComponent,
   ],
   templateUrl: './appointments.component.html',
-  styleUrls: ['./appointments.component.scss']
+  styleUrl: './appointments.component.scss',
 })
 export class AppointmentsComponent implements OnInit {
-  private readonly session = inject(SessionService);
-  username: string = '';
-  appointments: any[] = [];
-  selectedAppointment: any = null;
+  private readonly appointmentsService = inject(AppointmentsService);
 
-  constructor(private router: Router, private appointmentsService: AppointmentsService) {}
+  @ViewChild('formModal', { static: true }) private formModal!: ModalComponent;
+  @ViewChild('cancelModal', { static: true }) private cancelModal!: ModalComponent;
 
-  redirectToHome(): void {
-    this.router.navigate(['/home']);
-  }
+  readonly appointments = signal<Appointment[]>([]);
+  readonly loading = signal(true);
+  readonly loadError = signal<string | null>(null);
+  readonly groups = computed(() => groupAppointments(this.appointments()));
 
-  confirmLogout(): void {
-    Swal.fire({
-      title: 'Você tem certeza?',
-      text: 'Deseja realmente sair?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#046B46',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Certeza',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.session.logout();
-      }
-    });
-  }
+  /** Consulta em edição; nulo quando o diálogo está criando uma nova. */
+  readonly editing = signal<Appointment | null>(null);
+  readonly saving = signal(false);
+  readonly formError = signal<string | null>(null);
+
+  readonly toCancel = signal<Appointment | null>(null);
+  readonly cancelling = signal(false);
+  readonly cancelError = signal<string | null>(null);
+
+  readonly longDate = longDate;
+
+  readonly form = inject(NonNullableFormBuilder).group({
+    date: ['', Validators.required],
+    doctor: ['', Validators.required],
+    specialty: ['', Validators.required],
+    location: [''],
+    extraInfo: [''],
+  });
 
   ngOnInit(): void {
-    this.getUsernameFromLocalStorage();
-    this.getAllAppointments();
+    this.load();
   }
 
-  getUsernameFromLocalStorage(): void {
-    this.username = this.session.firstName;
-  }
-
-  getAllAppointments(): void {
-    this.appointmentsService.getAllAppointments().subscribe(
-      appointments => {
-        this.appointments = appointments.map(appointment => {
-          const parts = appointment.date.split('-');
-          const year = parts[0];
-          const month = parts[1];
-          const day = parts[2];
-          return {
-            ...appointment,
-            date: `${day}/${month}/${year}`
-          };
-        });
+  load(): void {
+    this.loading.set(true);
+    this.loadError.set(null);
+    this.appointmentsService.getAllAppointments().subscribe({
+      next: (appointments) => {
+        this.appointments.set(appointments);
+        this.loading.set(false);
       },
-      error => {
-        console.error('Erro ao obter agendamentos:', error);
-      }
-    );
-  }
-
-  selectAppointment(appointment: any): void {
-    this.selectedAppointment = appointment;
-  }
-
-  cancelAppointment(): void {
-    if (this.selectedAppointment) {
-      Swal.fire({
-        title: 'Cancelar Consulta',
-        text: 'Tem certeza que deseja cancelar a consulta selecionada?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#046B46',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Sim',
-        cancelButtonText: 'Não'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.appointmentsService.cancelAppointment(this.selectedAppointment.id).subscribe(
-            () => {
-              console.log('Consulta cancelada:', this.selectedAppointment);
-              this.getAllAppointments();
-              Swal.fire({
-                title: 'Sucesso',
-                text: 'Consulta cancelada com sucesso!',
-                icon: 'success',
-                confirmButtonColor: '#046B46',
-                confirmButtonText: 'Ok',
-              });
-            },
-            error => {
-              console.error('Erro ao cancelar consulta:', error);
-              Swal.fire({
-                title: 'Erro',
-                text: 'Ocorreu um erro ao cancelar a consulta.',
-                icon: 'error',
-                confirmButtonColor: '#046B46',
-                confirmButtonText: 'OK'
-              });
-            }
-          );
-        }
-      });
-    } else {
-      Swal.fire({
-        title: 'Nenhuma Consulta Selecionada',
-        text: 'Favor selecionar uma consulta antes de cancelar.',
-        icon: 'error',
-        confirmButtonColor: '#046B46',
-        confirmButtonText: 'OK'
-      });
-    }
-  }
-
-  updateAppointment(): void {
-    if (this.selectedAppointment) {
-      Swal.fire({
-        title: 'Atualizar Consulta',
-        html: `
-          <input id="doctor" class="swal2-input" placeholder="Médico" value="${this.selectedAppointment.doctor}">
-          <input id="specialty" class="swal2-input" placeholder="Especialidade" value="${this.selectedAppointment.specialty}">
-          <input id="date" class="swal2-input" placeholder="Data" value="${this.selectedAppointment.date}">
-          <input id="location" class="swal2-input" placeholder="Local" value="${this.selectedAppointment.location ?? ''}">
-          <input id="extraInfo" class="swal2-input" placeholder="Informações Extras" value="${this.selectedAppointment.extraInfo ?? ''}">
-        `,
-        showCancelButton: true,
-        confirmButtonColor: '#046B46',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Confirmar',
-        cancelButtonText: 'Cancelar',
-        showLoaderOnConfirm: true,
-        preConfirm: () => {
-          const doctor = (document.getElementById('doctor') as HTMLInputElement).value;
-          const specialty = (document.getElementById('specialty') as HTMLInputElement).value;
-          const date = (document.getElementById('date') as HTMLInputElement).value;
-          const location = (document.getElementById('location') as HTMLInputElement).value;
-          const extraInfo = (document.getElementById('extraInfo') as HTMLInputElement).value;
-
-          const parts = date.split('/');
-          const day = parts[0];
-          const month = parts[1];
-          const year = parts[2];
-          const formattedDate = `${year}-${month}-${day}`;
-          const updatedData = {
-            doctor,
-            specialty,
-            date: formattedDate,
-            location,
-            extraInfo
-          };
-  
-          return this.appointmentsService.updateAppointment(this.selectedAppointment.id, updatedData).toPromise();
-        }
-      }).then((result) => {
-        if (result.isConfirmed) {
-          console.log('Consulta atualizada com sucesso!');
-          this.getAllAppointments();
-          Swal.fire({
-            title: 'Sucesso',
-            text: 'Consulta atualizada com sucesso!',
-            icon: 'success',
-            confirmButtonColor: '#046B46',
-            confirmButtonText: 'Ok',
-          });
-        }
-      }).catch((error) => {
-        console.error('Erro ao atualizar consulta:', error);
-        Swal.fire({
-          title: 'Erro',
-          text: 'Erro ao atualizar consulta. Por favor, tente novamente.',
-          icon: 'error',
-          confirmButtonColor: '#046B46',
-          confirmButtonText: 'Ok',
-        });
-      });
-    } else {
-      Swal.fire({
-        title: 'Nenhuma Consulta Selecionada',
-        text: 'Favor selecionar uma consulta antes de atualizar.',
-        icon: 'error',
-        confirmButtonColor: '#046B46',
-        confirmButtonText: 'OK'
-      });
-    }
-  }
-  
-  createAppointment(): void {
-    Swal.fire({
-      title: 'Nova Consulta',
-      html: `
-        <input id="doctor" class="swal2-input" placeholder="Médico">
-        <input id="specialty" class="swal2-input" placeholder="Especialidade">
-        <input id="date" class="swal2-input" placeholder="Data">
-        <input id="location" class="swal2-input" placeholder="Local">
-        <input id="extraInfo" class="swal2-input" placeholder="Informações Extras">
-      `,
-      showCancelButton: true,
-      confirmButtonColor: '#046B46',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Confirmar',
-      cancelButtonText: 'Cancelar',
-      showLoaderOnConfirm: true,
-      preConfirm: () => {
-        const doctor = (document.getElementById('doctor') as HTMLInputElement).value;
-        const specialty = (document.getElementById('specialty') as HTMLInputElement).value;
-        const date = (document.getElementById('date') as HTMLInputElement).value;
-        const location = (document.getElementById('location') as HTMLInputElement).value;
-        const extraInfo = (document.getElementById('extraInfo') as HTMLInputElement).value;
-  
-        const parts = date.split('/'); 
-        const day = parts[0]; 
-        const month = parts[1]; 
-        const year = parts[2]; 
-        const formattedDate = `${year}-${month}-${day}`; 
-  
-        const appointmentData = {
-          doctor,
-          specialty,
-          date: formattedDate, 
-          location,
-          extraInfo
-        };
-  
-        return this.appointmentsService.createAppointment(appointmentData).toPromise();
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        console.log('Consulta criada com sucesso!');
-        this.getAllAppointments();
-        Swal.fire({
-          title: 'Sucesso',
-          text: 'Consulta criada com sucesso!',
-          icon: 'success',
-          confirmButtonColor: '#046B46',
-          confirmButtonText: 'Ok',
-        });
-      }
-    }).catch((error) => {
-      console.error('Erro ao criar consulta:', error);
-      Swal.fire({
-        title: 'Erro',
-        text: 'Erro ao criar consulta. Por favor, tente novamente.',
-        icon: 'error',
-        confirmButtonColor: '#046B46',
-        confirmButtonText: 'Ok',
-      });
+      error: (error: ApiError) => {
+        this.loadError.set(error.message);
+        this.loading.set(false);
+      },
     });
+  }
+
+  openCreate(): void {
+    this.editing.set(null);
+    this.resetForm({ date: '', doctor: '', specialty: '', location: '', extraInfo: '' });
+    this.formModal.open();
+  }
+
+  openEdit(appointment: Appointment): void {
+    this.editing.set(appointment);
+    this.resetForm({
+      date: appointment.date,
+      doctor: appointment.doctor,
+      specialty: appointment.specialty,
+      location: appointment.location ?? '',
+      extraInfo: appointment.extraInfo ?? '',
+    });
+    this.formModal.open();
+  }
+
+  closeForm(): void {
+    this.formModal.close();
+  }
+
+  save(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    const editing = this.editing();
+    const request = this.toRequest();
+    const call = editing
+      ? this.appointmentsService.updateAppointment(editing.id, request)
+      : this.appointmentsService.createAppointment(request);
+
+    this.saving.set(true);
+    this.formError.set(null);
+    call.subscribe({
+      next: (saved) => {
+        this.appointments.update((list) =>
+          editing ? list.map((a) => (a.id === saved.id ? saved : a)) : [...list, saved],
+        );
+        this.saving.set(false);
+        this.formModal.close();
+      },
+      error: (error: ApiError) => {
+        this.saving.set(false);
+        this.formError.set(applyServerErrors(this.form, error));
+      },
+    });
+  }
+
+  askCancel(appointment: Appointment): void {
+    this.toCancel.set(appointment);
+    this.cancelError.set(null);
+    this.cancelModal.open();
+  }
+
+  closeCancel(): void {
+    this.cancelModal.close();
+  }
+
+  confirmCancel(): void {
+    const target = this.toCancel();
+    if (!target) {
+      return;
+    }
+
+    this.cancelling.set(true);
+    this.appointmentsService.cancelAppointment(target.id).subscribe({
+      next: () => {
+        this.appointments.update((list) => list.filter((a) => a.id !== target.id));
+        this.cancelling.set(false);
+        this.cancelModal.close();
+      },
+      error: (error: ApiError) => {
+        this.cancelling.set(false);
+        this.cancelError.set(error.message);
+      },
+    });
+  }
+
+  private resetForm(value: AppointmentFormValue): void {
+    this.form.reset(value);
+    this.formError.set(null);
+  }
+
+  private toRequest(): AppointmentRequest {
+    const { date, doctor, specialty, location, extraInfo } = this.form.getRawValue();
+    return {
+      date,
+      doctor: doctor.trim(),
+      specialty: specialty.trim(),
+      location: location.trim() || null,
+      extraInfo: extraInfo.trim() || null,
+    };
   }
 }

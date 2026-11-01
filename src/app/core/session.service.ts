@@ -35,6 +35,10 @@ export class SessionService {
     return this.userName.split(' ')[0];
   }
 
+  updateName(name: string): void {
+    sessionStorage.setItem(USER_NAME_KEY, name);
+  }
+
   start(session: LoginResponse): void {
     sessionStorage.setItem(TOKEN_KEY, session.token);
     sessionStorage.setItem(USER_ID_KEY, session.id);

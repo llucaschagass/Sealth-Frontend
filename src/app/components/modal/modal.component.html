@@ -1,0 +1,12 @@
+<!-- O clique no backdrop é só um atalho de mouse; pelo teclado, o <dialog> nativo já fecha com Esc. -->
+<!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
+<dialog
+  #dialog
+  class="modal"
+  [attr.aria-labelledby]="titleId"
+  (click)="onClick($event)"
+  (close)="closed.emit()"
+>
+  <h2 class="modal__title" [id]="titleId">{{ heading }}</h2>
+  <ng-content />
+</dialog>

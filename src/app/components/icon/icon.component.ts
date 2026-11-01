@@ -10,7 +10,9 @@ export type IconName =
   | 'download'
   | 'user'
   | 'arrow-up-right'
-  | 'external-link';
+  | 'external-link'
+  | 'plus'
+  | 'map-pin';
 
 /** Ícones de traço (24x24, estilo Lucide) que herdam a cor do texto e são decorativos. */
 @Component({

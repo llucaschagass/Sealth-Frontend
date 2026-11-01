@@ -1,16 +1,25 @@
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-
+import { environment } from '../../environments/environment';
 import { HealthService } from './health.service';
 
 describe('HealthService', () => {
-  let service: HealthService;
+  it('busca os padrões com GET /health/defaults', () => {
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
+    const http = TestBed.inject(HttpTestingController);
+    let result: unknown;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(HealthService);
-  });
+    TestBed.inject(HealthService)
+      .getHealthDefaults()
+      .subscribe((value) => (result = value));
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
+    const req = http.expectOne(`${environment.apiUrl}/health/defaults`);
+    expect(req.request.method).toBe('GET');
+    req.flush({ weight: 70, height: 1.75, age: 30, sex: 'masculino' });
+    expect(result).toEqual({ weight: 70, height: 1.75, age: 30, sex: 'masculino' });
+    http.verify();
   });
 });

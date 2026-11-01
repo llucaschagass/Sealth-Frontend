@@ -1,186 +1,53 @@
-@import "../../../styles/variables.scss"; 
-
-.appointments-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px;
-    max-width: auto;
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 
-.appointments-header .logo,
-.appointments-header .user-icon {
-    width: 400px;
-    height: auto;
+.intro,
+.state {
+  color: var(--color-text-muted);
 }
 
-.appointments-header .user-icon {
-    width: 180px; 
-    height: auto;
-    margin-bottom: 40px; 
+section + section {
+  margin-top: var(--space-6);
 }
 
-.appointments-header .title-container {
-    position: absolute;
-    left: 50%; 
-    transform: translateX(-50%); 
-    flex: 1;
-    display: flex;
-    justify-content: center; 
-    align-items: center; 
-    background-color: $primary-color; 
-    border-radius: 30px;
-    padding: 10px;
-    max-width: 700px; 
+h2 {
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-lg);
 }
 
-.appointments-header .title-container h1 {
-    color: white;
+.list {
+  display: grid;
+  gap: var(--space-3);
+  list-style: none;
+}
+
+.retry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding-block: var(--space-7);
+  text-align: center;
+
+  h2 {
     margin: 0;
-}
+  }
 
-.main-container {
-    display: flex;
-}
-
-.appointments-container,
-.calendar-container {
-    flex: 1; 
-    margin-right: 20px; 
-}
-
-.appointments-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
-}
-
-.appointments-module {
-    position: relative;
-    width: 700px;
-    height: 450px;
-    background-color: $primary-color;
-    border-radius: 30px;
-    display: flex;
-    flex-direction: column;
-    font-size: 26px;
-    color: white;
-    font-family: "Poppins", sans-serif;
-    padding: 40px;
-    font-weight: bold;
-    transition: transform 0.3s ease;
-    cursor: pointer;
-    margin-left: 150px;
-    margin-bottom: 20px;
-
-    &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.5);
-    }
-}
-
-.appointments-module-info {
-    position: relative;
-    width: 700px;
-    height: 500px;
-    background-color: $primary-color;
-    border-radius: 30px;
-    display: flex;
-    flex-direction: column;
-    font-size: 26px;
-    color: white;
-    font-family: "Poppins", sans-serif;
-    padding: 40px;
-    font-weight: bold;
-    transition: transform 0.3s ease;
-    cursor: pointer;
-    margin-right: 150px;
-    margin-bottom: 20px;
-    margin-top: 50px;
-
-    &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.5);
-    }
-}
-
-.module-title {
-    color: white;
-    margin-bottom: 10px;
-    align-self: center;
-    margin-top: 10px;
-}
-
-.info-container .info-extra {
-    margin-bottom: 15px;
-    margin-top: 30px;
-    align-self: center; 
-}
-
-.info-container .important-info {
-    margin-bottom: 0;
-    margin-top: 0;
-    font-size: 20px;
-}
-
-.appointments-module .appointment-list {
-    margin-top: 20px;
-}
-
-.appointments-module .appointment-list li {
-    padding: 10px; 
-}
-
-.appointments-module .buttons-container {
-    margin-top: 20px;
-}
-
-.buttons-container {
-    display: flex;
-    margin-left: 150px;
-}
-
-.button {
-    background-color: $primary-color;
-    color: white;
-    border: none;
-    border-radius: 20px;
-    padding: 10px 20px;
-    margin: 0 10px;
-    cursor: pointer;
-    font-family: "Poppins", sans-serif;
-    font-weight: bold;
-    font-size: 20px;
-    transition: background-color 0.3s ease;
-    width: 200px;
-}
-
-.button:hover {
-    background-color: darken($primary-color, 10%);
-}
-
-.calendar-container {
-    position: relative; 
-    width: 600px; 
-    height: 600px; 
-    margin-top: 53px;
-}
-
-.overlay {
-    position: fixed;
-    top: 20px;
-    right: 240px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-}
-
-.overlay img {
-    width: 180px;
-    height: auto;
-    margin-bottom: 5px;
-}
-
-.overlay h1 {
-    font-size: 36px;
+  p {
+    color: var(--color-text-muted);
+  }
 }

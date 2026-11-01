@@ -1,0 +1,83 @@
+@use '../../../../styles/mixins' as *;
+
+.appointment {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-4);
+  align-items: center;
+
+  @include up(sm) {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  &--past {
+    background: var(--color-bg);
+    color: var(--color-text-muted);
+  }
+
+  &__date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 4.5rem;
+    padding: var(--space-3);
+    background: var(--color-primary-soft);
+    border-radius: var(--radius-md);
+    color: var(--color-primary-hover);
+    line-height: 1.1;
+  }
+
+  &--past &__date {
+    background: var(--color-border);
+    color: var(--color-text-muted);
+  }
+
+  &__day {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+  }
+
+  &__month {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+  }
+
+  &__year {
+    font-size: 0.75rem;
+  }
+
+  &__body {
+    min-width: 0;
+
+    h3 {
+      font-size: var(--font-size-md);
+      color: var(--color-text);
+    }
+  }
+
+  &__specialty {
+    font-weight: var(--font-weight-medium);
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+  }
+
+  &__actions {
+    display: flex;
+    grid-column: 1 / -1;
+    gap: var(--space-2);
+
+    @include up(sm) {
+      grid-column: auto;
+    }
+  }
+
+  &__cancel {
+    color: var(--color-danger);
+  }
+}

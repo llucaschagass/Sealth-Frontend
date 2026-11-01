@@ -1,48 +1,30 @@
-<img src="/assets/images/brand/logo.webp" alt="" class="logo">
-
-<div class="container">
-    <div class="row">
-        <div class="module-extra"></div>
-        <div class="module-big" (click)="openAppointmentsComponent()">
-            <img class="icon" src="/assets/images/icons/calendario.webp" alt="Logo">
-            <span class="line1">Minhas</span>
-            <span class="line2">Consultas</span>
-            <img class="open-icon" src="/assets/images/icons/open.webp" alt="Abrir">
-        </div>
+<app-shell title="Início">
+  <section class="welcome">
+    <div class="welcome__text">
+      <h2>Olá, {{ firstName }}!</h2>
+      <p>Como podemos cuidar de você hoje?</p>
     </div>
-    <div class="row">
-        <div class="module" (click)="openMedicinesComponent()">
-            <img class="icon" src="/assets/images/icons/medicamentos.webp" alt="Medicamentos">
-            <span class="line1">Meus</span>
-            <span class="line2">Medicamentos</span>
-            <img class="open-icon" src="/assets/images/icons/open.webp" alt="Abrir">
-        </div>
-        <div class="module" (click)="openInfoComponent()">
-            <img class="icon" src="/assets/images/icons/avisos.webp" alt="Informações Importantes">
-            <span class="line1">Informações</span>
-            <span class="line2">Importantes</span>
-            <img class="open-icon" src="/assets/images/icons/open.webp" alt="Abrir">
-        </div>
-    </div>
-    <div class="row">
-        <div class="module" (click)="openHealthComponent()">
-            <img class="icon" src="/assets/images/icons/saude.webp" alt="Saúde">
-            <span class="line1">Minha</span>
-            <span class="line2">Saúde</span>
-            <img class="open-icon" src="/assets/images/icons/open.webp" alt="Abrir">
-        </div>
-        <div class="module" (click)="openConfigComponent()">
-            <img class="icon" src="/assets/images/icons/config.webp" alt="Configurações Gerais">
-            <span class="line1">Configurações</span>
-            <span class="line2">Gerais</span>
-            <img class="open-icon" src="/assets/images/icons/open.webp" alt="Abrir">
-        </div>
-    </div>
-</div>
+    <img
+      class="welcome__image"
+      src="/assets/images/illustrations/home.webp"
+      alt=""
+      width="800"
+      height="755"
+    />
+  </section>
 
-<div class="overlay">
-    <img src="/assets/images/icons/user.webp" alt="User Icon" (click)="confirmLogout()">
-    <h1>Olá {{ username }}</h1>
-</div>
-
-<img src="/assets/images/illustrations/home.webp" alt="" class="home-ilustration">
+  <nav aria-label="Seções do aplicativo">
+    <ul class="sections">
+      @for (section of sections; track section.path) {
+        <li>
+          <a class="tile card" [routerLink]="section.path">
+            <span class="tile__icon"><app-icon [name]="section.icon" /></span>
+            <span class="tile__title">{{ section.title }}</span>
+            <span class="tile__description">{{ section.description }}</span>
+            <app-icon class="tile__arrow" name="arrow-up-right" />
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+</app-shell>

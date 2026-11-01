@@ -1,18 +1,19 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
+import { IconComponent } from '../../components/icon/icon.component';
+import { LogoComponent } from '../../components/logo/logo.component';
+import { ABOUT_TEXT, CONTACT, SERVICES } from './main-content';
 
 @Component({
   selector: 'app-main',
   standalone: true,
-  imports: [],
+  imports: [RouterLink, LogoComponent, IconComponent],
   templateUrl: './main.component.html',
-  styleUrl: './main.component.scss'
+  styleUrl: './main.component.scss',
 })
 export class MainComponent {
-  email: string = "suporte@sealth.com.br";
-  constructor(private router: Router) { }
-  
-  openLogin(): void {
-    this.router.navigate(['/login']);
-  }
+  readonly services = SERVICES;
+  readonly contact = CONTACT;
+  readonly aboutText = ABOUT_TEXT;
+  readonly year = new Date().getFullYear();
 }

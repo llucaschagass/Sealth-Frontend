@@ -1,38 +1,32 @@
-<header class="medicines-header">
-    <img src="/assets/images/brand/logo.webp" alt="" class="logo" (click)="redirectToHome()">
-    <div class="title-container">
-        <h1 class="title">Meus Medicamentos</h1>
-    </div>
-    
-    <div class="overlay">
-        <img src="/assets/images/icons/user.webp" alt="User Icon" (click)="confirmLogout()">
-        <h1>Olá {{ username }}</h1>
-    </div>
-    
-</header>
+<app-shell title="Meus medicamentos">
+  <p class="intro">Consulte a bula em PDF dos medicamentos disponíveis.</p>
 
-<div class="main-container">
-    <div class="medicines-container">
-        <div class="medicines-module">
-            <h2 class="module-title">Receitas Disponíveis</h2>
-            <div class="info-container">
-                <ul>
-                    <li *ngFor="let medicine of medicines" (click)="selectMedicine(medicine)">{{ medicine }}</li>
-                </ul>
-            </div>
-        </div>
+  @if (loading()) {
+    <p class="state" role="status">Carregando medicamentos...</p>
+  } @else if (error()) {
+    <div class="alert alert--danger" role="alert">
+      <p>{{ error() }}</p>
+      <button type="button" class="btn btn--secondary" (click)="load()">Tentar novamente</button>
     </div>
-    <div class="download-container">
-        <div class="download-module">
-            <h2 class="module-title">Download PDF</h2>
-            <div class="download-content" *ngIf="selectedMedicine">
-                <a href="#" (click)="downloadPDF(selectedMedicine, $event)">
-                    <img src="/assets/images/icons/download.webp" alt="Download" class="download-icon">
-                    <p class="select-text">Baixar {{ selectedMedicine }}</p>
-                </a>
-            </div>
-            <div *ngIf="!selectedMedicine" class="select-text">Selecione um medicamento</div>
-        </div>
-        <img src="/assets/images/illustrations/lab.webp" alt="Imagem" class="image-corner">
-    </div> 
-</div>
+  } @else if (medicines().length === 0) {
+    <p class="state">Nenhum medicamento disponível no momento.</p>
+  } @else {
+    <ul class="medicines">
+      @for (medicine of medicines(); track medicine) {
+        <li class="card medicine">
+          <span class="medicine__icon"><app-icon name="pill" /></span>
+          <h2 class="medicine__name">{{ medicine }}</h2>
+          <a
+            class="btn btn--secondary"
+            [href]="pdfUrl(medicine)"
+            target="_blank"
+            rel="noopener noreferrer"
+            [attr.aria-label]="'Abrir bula de ' + medicine + ' em PDF (nova aba)'"
+          >
+            <app-icon name="download" /> Bula (PDF)
+          </a>
+        </li>
+      }
+    </ul>
+  }
+</app-shell>

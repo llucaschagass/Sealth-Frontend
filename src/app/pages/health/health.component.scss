@@ -1,213 +1,131 @@
-@import "../../../styles/variables.scss";
+@use '../../../styles/mixins' as *;
 
-.health-header {
-    display: flex;
+.intro {
+  max-width: 44rem;
+  margin-bottom: var(--space-5);
+  color: var(--color-text-muted);
+}
+
+.alert {
+  margin-bottom: var(--space-4);
+}
+
+.layout {
+  display: grid;
+  align-items: start;
+  gap: var(--space-5);
+
+  @include up(md) {
+    grid-template-columns: minmax(18rem, 22rem) 1fr;
+  }
+
+  h2 {
+    margin-bottom: var(--space-4);
+  }
+}
+
+.sex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  border: 0;
+
+  legend {
+    margin-bottom: var(--space-2);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+  }
+
+  label {
+    display: inline-flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 20px;
-    max-width: auto;
-}
-
-.health-header .logo,
-.health-header .user-icon {
-    width: 400px; 
-    height: auto;
-}
-
-.health-header .user-icon {
-    width: 180px; 
-    height: auto;
-    
-}
-
-.health-header .title-container {
-    position: absolute;
-    left: 50%; 
-    transform: translateX(-50%); 
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: $primary-color; 
-    border-radius: 30px; 
-    padding: 10px; 
-    max-width: 700px; 
-}
-
-.health-header .title-container h1 {
-    color: white; 
-    margin: 0; 
-}
-
-.modules-container {
-    display: flex;
-    justify-content:  space-around;
-    width: 100%;
-}
-
-.health-module {
-    position: relative;
-    width: 370px;
-    height: 300px;
-    background-color: $primary-color;
-    border-radius: 30px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-start;
-    font-size: 26px;
-    color: white;
-    font-family: "Poppins", sans-serif;
-    text-align: left;
-    padding: 20px;
-    font-weight: bold;
-    transition: transform 0.3s ease;
+    gap: var(--space-2);
     cursor: pointer;
-    
+  }
 
-    &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.5);
+  input {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--color-primary);
+  }
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+
+  @include up(sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+
+  &__label {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  &__value {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.2;
+
+    small {
+      color: var(--color-text-muted);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-regular);
     }
-}
-.results-module {
-    position: relative;
-    width: 500px;
-    height: auto; 
-    background-color: $primary-color;
-    border-radius: 30px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-start;
-    font-size: 26px;
-    color: white;
-    font-family: "Poppins", sans-serif;
-    text-align: left;
-    padding: 20px;
-    font-weight: bold;
-    transition: transform 0.3s ease;
-    cursor: pointer;
-   
-   
+  }
 
-    &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.5);
-    }
+  &__hint {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+  }
 }
 
+.badge {
+  align-self: flex-start;
+  margin-top: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-hover);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
 
+  &[data-category='Abaixo do peso'],
+  &[data-category='Sobrepeso'] {
+    background: var(--color-warning-soft);
+    color: var(--color-warning);
+  }
 
-.module-title {
-    color: white;
-    display: flex;
-    align-items: center;
-    align-self: center;
-    justify-content: center;
-    
-    
+  &[data-category='Obesidade'] {
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
+  }
 }
 
-.info-container {
-    margin-top: 10px;
+.status {
+  border-inline-start: 4px solid var(--color-primary);
+
+  &[data-status='abaixo'],
+  &[data-status='acima'] {
+    border-inline-start-color: var(--color-warning);
+  }
 }
 
-.info-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
+.empty {
+  color: var(--color-text-muted);
 }
 
-.label-wrapper {
-    width: 100px;
-}
-.label-wrapper-final {
-    width: 230px;
-}
-
-.info-text {
-    color: white;
-    padding: 8px;
-    border-radius: 5px;
-}
-
-
-.results-module .module-title {
-    color: white;
-}
-
-.results-module .info-container {
-    margin-top: 10px;
-}
-
-.results-module .info-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.results-module .label-wrapper {
-    width: 300px; 
-}
-
-.results-module .info-text {
-    color: white;
-    padding: 8px;
-    border-radius: 5px;
-}
-
-.health-evaluation {
-    position: relative;
-    width: 450px;
-    height: 250px;
-    background-color: $primary-color;
-    border-radius: 30px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-start;
-    font-size: 26px;
-    color: white;
-    font-family: "Poppins", sans-serif;
-    text-align: left;
-    padding: 20px;
-    font-weight: bold;
-    transition: transform 0.3s ease;
-    cursor: pointer;
-    
-    
-    &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.5);
-    }
-}
-
-.image-corner {
-    position: fixed;
-    bottom: 0;
-    right: 90px;
-    width: 360px; 
-    height: auto; 
-    
-}
-
-.overlay {
-    position: fixed;
-    top: 20px;
-    right: 240px;
-    
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-}
-
-.overlay img {
-    width: 140px;
-    height: auto;
-    margin-bottom: 5px;
-}
-
-.overlay h1 {
-    font-size: 36px;
+.disclaimer {
+  margin-top: var(--space-4);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
 }

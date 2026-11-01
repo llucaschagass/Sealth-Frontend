@@ -1,114 +1,120 @@
-<div class="header">
+<a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
 
-    <img src="/assets/images/brand/logo.webp" alt="Logo do Sistema" class="logo">
-    <ul class="menu">
-        <li><a href="#servicos">Serviços</a></li>
-        <li><a href="#contato">Contato</a></li>
-        <li><a href="#sobre">Sobre</a></li>
-    </ul>
-
-</div>
-
-  <div class="content">
-
-      <div class="conteiner-inicio">
-
-        <div class="vaiza">
-          <p></p>
-          <!-- //////////////////////////////////// -->
-        </div>
-
-        <div class="quadro">
-
-          <p class="tagline">Fique tranquilo sabendo que sua saúde está em boas mãos.</p>
-
-          <div class="conteiner-inicio-img">
-            <img src="/assets/images/illustrations/main-menu.webp" alt="Imagem sobre servicos">
-          </div>
-
-          <br>
-
-          <div class="quadro-button">
-            <button class="start-button" (click)="openLogin()">Comece Agora</button>
-          </div>
-          
-
-        </div>
-
-        <div class="vaiza">
-          <p></p>
-          <!-- //////////////////////////////////// -->
-        </div>
-
-      </div>
-
+<header class="topbar">
+  <div class="layout-container topbar__bar">
+    <a routerLink="/" aria-label="Sealth: página inicial">
+      <app-logo [decorative]="true" />
+    </a>
+    <nav class="topbar__nav" aria-label="Seções da página">
+      <a routerLink="/" fragment="servicos">Serviços</a>
+      <a routerLink="/" fragment="sobre">Sobre</a>
+      <a routerLink="/" fragment="contato">Contato</a>
+    </nav>
+    <a class="btn btn--secondary" routerLink="/login">Entrar</a>
   </div>
+</header>
 
-
-
-
-<div class="content">
-
-  <div class="conteiner">
-
-    <div class="conteiner-img">
-
-      <img src="/assets/images/illustrations/main-services.webp" alt="Imagem sobre servicos">
-
-    </div>
-
-    <div class="conteiner-text"> 
-      
-      <section id="servicos" >
-        
-      <h2>Nossos Serviços</h2>
+<main id="conteudo">
+  <section class="hero">
+    <div class="layout-container hero__inner">
+      <div class="hero__text">
+        <h1>Fique tranquilo sabendo que sua saúde está em boas mãos.</h1>
         <p>
-          <strong>1. Minhas Consultas:</strong> Agende, visualize e gerencie suas consultas médicas de forma conveniente.
+          Consultas, medicamentos e informações de saúde reunidos em um só lugar, de forma simples e
+          segura.
         </p>
-        <p>
-          <strong>2. Meus Medicamentos:</strong> Acesse informações sobre seus medicamentos prescritos, incluindo dosagem e horários de administração.
-        </p>
-        <p>
-          <strong>3. Avisos Importantes:</strong> Mantenha-se informado com alertas sobre campanhas de vacinação, surtos de doenças e outras orientações de saúde.
-        </p>
-        <p>
-          <strong>4. Minha Saúde:</strong> Registre e monitore informações pessoais de saúde, como peso, altura e pressão arterial, e receba feedback personalizado para melhorar seu bem-estar.
-        </p>
-        
-      
-      </section>
-
-    </div>
-
-  </div> 
-
-
-  <div class="conteiner-contato">
-
-    <section id="contato" class="section">
-
-      <div class="contact-info">
-        <h2>Contato</h2>
-        <p><strong>E-mail:</strong> {{ email }}</p>
-        <p><strong>Telefone:</strong> (12) 3456-7890</p>
-        <p><strong>Endereço:</strong> Rua Qualquer, 123, Belory Hills, Estado, País</p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" routerLink="/signup">Comece agora</a>
+          <a class="btn btn--secondary" routerLink="/login">Já tenho conta</a>
+        </div>
       </div>
-    
-    </section>
-
-    <div class="conteiner-img">
-      <img src="/assets/images/illustrations/main-contact.webp" alt="Imagem sobre contato">
+      <img
+        class="hero__image"
+        src="/assets/images/illustrations/main-menu.webp"
+        alt=""
+        width="800"
+        height="800"
+      />
     </div>
+  </section>
 
-  </div>
-    
-    <section id="sobre" class="section">
-      <div class="content">
-        <img src="/assets/images/illustrations/main-aboutus.webp" alt="Imagem sobre nós">
+  <section id="servicos" class="section">
+    <div class="layout-container section__split">
+      <div class="section__figure">
+        <img
+          class="section__image"
+          src="/assets/images/illustrations/main-services.webp"
+          alt=""
+          width="800"
+          height="800"
+          loading="lazy"
+        />
       </div>
-      <div class="content">
+      <div>
+        <h2>Nossos serviços</h2>
+        <ul class="services">
+          @for (service of services; track service.title) {
+            <li class="service">
+              <span class="service__icon"><app-icon [name]="service.icon" /></span>
+              <div>
+                <h3>{{ service.title }}</h3>
+                <p>{{ service.description }}</p>
+              </div>
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="sobre" class="section section--tinted">
+    <div class="layout-container section__split section__split--reverse">
+      <div class="section__figure">
+        <img
+          class="section__image"
+          src="/assets/images/illustrations/main-aboutus.webp"
+          alt=""
+          width="800"
+          height="800"
+          loading="lazy"
+        />
+      </div>
+      <div>
         <h2>Sobre nós</h2>
-        <p>O SEALTH (Sistema Eficaz de Administração Logística e Tecnologia Hospitalar) é mais do que um projeto; é uma inovação projetada para transformar a gestão hospitalar. Fundindo tecnologia de ponta com especialização em saúde, nossa equipe comprometida concebeu uma solução completa e eficiente para atender às demandas exclusivas das instituições médicas.</p>
+        <p class="about">{{ aboutText }}</p>
       </div>
-    </section>
-</div>
+    </div>
+  </section>
+
+  <section id="contato" class="section">
+    <div class="layout-container section__split">
+      <div class="section__figure">
+        <img
+          class="section__image"
+          src="/assets/images/illustrations/main-contact.webp"
+          alt=""
+          width="800"
+          height="800"
+          loading="lazy"
+        />
+      </div>
+      <div>
+        <h2>Contato</h2>
+        <dl class="contact">
+          <dt>E-mail</dt>
+          <dd>
+            <a [href]="'mailto:' + contact.email">{{ contact.email }}</a>
+          </dd>
+          <dt>Telefone</dt>
+          <dd>{{ contact.phone }}</dd>
+          <dt>Endereço</dt>
+          <dd>{{ contact.address }}</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="layout-container">© {{ year }} Sealth. Todos os direitos reservados.</div>
+</footer>

@@ -1,87 +1,83 @@
-<header class="health-header">
-    <img src="/assets/images/brand/logo.webp" alt="" class="logo" (click)="redirectToHome()">
-    <div class="title-container">
-        <h1 class="title">Informações de Saúde</h1>
-    </div>
-    <div class="overlay">
-        
-    <img src="/assets/images/icons/user.webp" alt="User Icon" class="user-icon" (click)="confirmLogout()">
-    <h1>Olá {{ username }}</h1>
-    </div>
-</header>
+<app-shell title="Minha saúde">
+  <p class="intro">
+    Ajuste seus dados para ver estimativas de IMC, hidratação e gasto calórico. Os valores iniciais
+    são exemplos; eles ainda não ficam salvos na sua conta.
+  </p>
 
-<div class="modules-container">
-    <div class="health-module">
-        <h2 class="module-title">Informações</h2>
-        <div class="info-container">
-            <div class="info-item">
-                <div class="label-wrapper">
-                    <label for="weight">Peso:</label>
-                </div>
-                <div class="info-text">{{ userPeso }} kg</div>
-            </div>
-            <div class="info-item">
-                <div class="label-wrapper">
-                    <label for="height">Altura:</label>
-                </div>
-                <div class="info-text">{{ userAltura }} m</div>
-            </div>
-            <div class="info-item">
-                <div class="label-wrapper">
-                    <label for="height">Sexo:</label>
-                </div>
-                <div class="info-text">{{ userSexo }}</div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="results-module">
-        <h2 class="module-title">Resultados</h2>
-        <div class="info-container">
-            <div class="info-item">
-                <div class="label-wrapper">
-                    <label for="imc">Seu IMC:</label>
-                </div>
-                <div class="info-text">{{ userImc.toFixed(2) }}</div>
-            </div>
-            <div class="info-item">
-                <div class="label-wrapper">
-                    <label for="agua">Água Recomendada:</label>
-                </div>
-                <div class="info-text">{{ aguaRecomendada }} L</div>
-            </div>
-            <div class="info-item">
-                <div class="label-wrapper">
-                    <label for="calorias">Calorias Diárias:</label>
-                </div>
-                <div class="info-text">{{ caloriasDiarias.toFixed(2) }} kcal</div>
-            </div>
-            <div class="info-item">
-                <div class="label-wrapper">
-                    <label for="pesoIdeal">Peso Ideal:</label>
-                </div>
-                <div class="info-text">{{ pesoIdeal }} kg</div>
-            </div>
-        </div>
-    </div>
+  @if (loadError()) {
+    <p class="alert alert--danger" role="alert">{{ loadError() }}</p>
+  }
 
-    <div class="health-evaluation">
-        <h2 class="module-title">Avaliação Final</h2>
-        <div class="info-container">
-            <div class="info-item">
-                <div class="label-wrapper">
-                    <label for="imc">IMC:</label>
-                </div>
-                <div class="info-text">{{ userImcEvaluation }}</div>
-            </div>
-            <div class="info-item">
-                <div class="label-wrapper-final">
-                    <label for="weight-status">Estado do Peso:</label>
-                </div>
-                <div class="info-text">{{ userWeightStatus }}</div>
-            </div>
-        </div>
-    </div>
-</div>
+  <div class="layout">
+    <form class="card" [formGroup]="form" novalidate>
+      <h2>Seus dados</h2>
+      <div class="form-stack">
+        <app-text-field
+          formControlName="weight"
+          type="number"
+          label="Peso"
+          suffix="kg"
+          step="0.1"
+        />
+        <app-text-field formControlName="height" type="number" label="Altura" suffix="cm" />
+        <app-text-field formControlName="age" type="number" label="Idade" suffix="anos" />
 
-<img src="/assets/images/illustrations/doctor.webp" alt="Imagem" class="image-corner">
+        <fieldset class="sex">
+          <legend>Sexo biológico</legend>
+          <label><input type="radio" formControlName="sex" value="masculino" /> Masculino</label>
+          <label><input type="radio" formControlName="sex" value="feminino" /> Feminino</label>
+        </fieldset>
+      </div>
+    </form>
+
+    <section class="results" aria-labelledby="results-title" aria-live="polite">
+      <h2 id="results-title">Resultados</h2>
+
+      @if (result(); as r) {
+        <div class="stats">
+          <div class="card stat">
+            <span class="stat__label">IMC</span>
+            <span class="stat__value">{{ format(r.bmi) }}</span>
+            <span class="badge" [attr.data-category]="r.bmiCategory">{{ r.bmiCategory }}</span>
+          </div>
+          <div class="card stat">
+            <span class="stat__label">Água recomendada</span>
+            <span class="stat__value">{{ format(r.waterLiters) }} <small>L/dia</small></span>
+          </div>
+          <div class="card stat">
+            <span class="stat__label">Calorias em repouso</span>
+            <span class="stat__value">{{ format(r.restingKcal, 0) }} <small>kcal/dia</small></span>
+            <span class="stat__hint">Sem contar atividade física</span>
+          </div>
+          <div class="card stat">
+            <span class="stat__label">Peso ideal estimado</span>
+            <span class="stat__value">{{ format(r.idealWeightKg) }} <small>kg</small></span>
+          </div>
+        </div>
+
+        <p class="card status" [attr.data-status]="r.weightStatus">
+          @switch (r.weightStatus) {
+            @case ('dentro') {
+              Seu peso está <strong>dentro</strong> da faixa saudável para a sua altura:
+            }
+            @case ('abaixo') {
+              Seu peso está <strong>abaixo</strong> da faixa saudável para a sua altura:
+            }
+            @case ('acima') {
+              Seu peso está <strong>acima</strong> da faixa saudável para a sua altura:
+            }
+          }
+          {{ format(r.healthyRangeKg.min) }} a {{ format(r.healthyRangeKg.max) }} kg.
+        </p>
+      } @else {
+        <p class="card empty">
+          Preencha peso, altura e idade com valores válidos para ver os resultados.
+        </p>
+      }
+
+      <p class="disclaimer">
+        Estimativas informativas, que não substituem a avaliação de um profissional de saúde.
+      </p>
+    </section>
+  </div>
+</app-shell>

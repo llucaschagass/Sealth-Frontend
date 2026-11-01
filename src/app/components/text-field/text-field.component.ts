@@ -1,7 +1,7 @@
 import { Component, Input, inject } from '@angular/core';
 import { ControlValueAccessor, NgControl, ValidationErrors } from '@angular/forms';
 
-type FieldType = 'text' | 'email' | 'password';
+type FieldType = 'text' | 'email' | 'password' | 'date' | 'number';
 
 let nextId = 0;
 
@@ -11,6 +11,11 @@ const ERROR_MESSAGES: Record<string, (error: unknown) => string> = {
   minlength: (error) =>
     `Mínimo de ${(error as { requiredLength: number }).requiredLength} caracteres`,
   mismatch: () => 'As senhas não coincidem',
+  number: () => 'Informe um número',
+  range: (error) => {
+    const { min, max } = error as { min: number; max: number };
+    return `Informe um valor entre ${min} e ${max}`;
+  },
   server: (error) => String(error),
 };
 
@@ -26,6 +31,9 @@ export class TextFieldComponent implements ControlValueAccessor {
   @Input() type: FieldType = 'text';
   @Input() placeholder = '';
   @Input() autocomplete = 'off';
+  /** Unidade exibida dentro do campo (ex.: kg, cm). */
+  @Input() suffix = '';
+  @Input() step: string | null = null;
 
   readonly id = `field-${nextId++}`;
   value = '';

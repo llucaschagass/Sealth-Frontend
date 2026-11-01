@@ -12,6 +12,8 @@ const ALL_ICONS: IconName[] = [
   'user',
   'arrow-up-right',
   'external-link',
+  'plus',
+  'map-pin',
 ];
 
 describe('IconComponent', () => {

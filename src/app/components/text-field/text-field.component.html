@@ -9,11 +9,16 @@
       [disabled]="disabled"
       [attr.placeholder]="placeholder || null"
       [attr.autocomplete]="autocomplete"
+      [attr.step]="step"
+      [attr.inputmode]="type === 'number' ? 'decimal' : null"
       [attr.aria-invalid]="errorMessage ? true : null"
       [attr.aria-describedby]="errorMessage ? id + '-error' : null"
       (input)="onInput($event)"
       (blur)="onBlur()"
     />
+    @if (suffix) {
+      <span class="field__suffix" aria-hidden="true">{{ suffix }}</span>
+    }
     @if (type === 'password') {
       <button
         type="button"

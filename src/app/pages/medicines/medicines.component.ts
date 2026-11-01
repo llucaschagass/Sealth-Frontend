@@ -1,77 +1,41 @@
-import { Component, inject } from '@angular/core';
-import { SessionService } from '../../core/session.service';
-import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { AppShellComponent } from '../../components/app-shell/app-shell.component';
+import { IconComponent } from '../../components/icon/icon.component';
 import { MedicinesService } from '../../services/medicines.service';
-import { CommonModule } from '@angular/common';
+import { ApiError } from '../../../types/api-error.type';
+import { medicinePdfUrl } from './medicine-pdf';
 
 @Component({
   selector: 'app-medicines',
   standalone: true,
-  imports: [
-    CommonModule,
-  ],
+  imports: [AppShellComponent, IconComponent],
   templateUrl: './medicines.component.html',
-  styleUrl: './medicines.component.scss'
+  styleUrl: './medicines.component.scss',
 })
-export class MedicinesComponent {
-  private readonly session = inject(SessionService);
-  username: string = '';
-  medicines: string[] = [];
-  selectedMedicine: string = '';
+export class MedicinesComponent implements OnInit {
+  private readonly medicinesService = inject(MedicinesService);
 
-  constructor(private router: Router, private medicinesService: MedicinesService) {}
+  readonly medicines = signal<string[]>([]);
+  readonly loading = signal(true);
+  readonly error = signal<string | null>(null);
+  readonly pdfUrl = medicinePdfUrl;
 
   ngOnInit(): void {
-    this.getMedicines()
-    this.getUsernameFromLocalStorage();
-  }
-  
-  redirectToHome(): void {
-    this.router.navigate(['/home']);
-    this.getMedicines();
+    this.load();
   }
 
-  confirmLogout(): void {
-    Swal.fire({
-      title: 'Você tem certeza?',
-      text: 'Deseja realmente sair?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#046B46',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Certeza',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.session.logout();
-      }
-    });
-  }
-
-  getMedicines(): void {
-    this.medicinesService.getMedicinesPDFs().subscribe(
-      (medicines: string[]) => {
-        this.medicines = medicines;
+  load(): void {
+    this.loading.set(true);
+    this.error.set(null);
+    this.medicinesService.getMedicinesPDFs().subscribe({
+      next: (medicines) => {
+        this.medicines.set(medicines);
+        this.loading.set(false);
       },
-      (error) => {
-        console.error('Error fetching medicines:', error);
-      }
-    );
-  }
-
-  selectMedicine(medicine: string): void {
-    this.selectedMedicine = medicine;
-  }
-
-  downloadPDF(medicine: string, event: Event): void {
-    event.preventDefault(); // Prevenir o comportamento padrão do clique
-    const lowercaseMedicine = medicine.toLowerCase(); 
-    const pdfUrl = `/assets/pdf/${lowercaseMedicine}.pdf`;
-    window.open(pdfUrl, '_blank'); // Abre o PDF em uma nova aba
-  }
-  
-  getUsernameFromLocalStorage(): void {
-    this.username = this.session.firstName;
+      error: (error: ApiError) => {
+        this.error.set(error.message);
+        this.loading.set(false);
+      },
+    });
   }
 }

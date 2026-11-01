@@ -1,57 +1,47 @@
-<header class="config-header">
-    <img src="/assets/images/brand/logo.webp" alt="" class="logo" (click)="redirectToHome()">
-    <div class="title-container">
-        <h1 class="title">Configurações Gerais</h1>
-    </div>
+<app-shell title="Configurações">
+  <div class="layout">
+    <form class="card" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <h2>Seus dados</h2>
+      <p class="hint">Altere apenas o que precisar. A senha só muda se você preencher o campo.</p>
 
-    <div class="overlay">
-        <img src="/assets/images/icons/user.webp" alt="User Icon" (click)="confirmLogout()">
-        <h1>Olá {{ username }}</h1>
-    </div>
-</header>
+      @if (loading()) {
+        <p role="status">Carregando seus dados...</p>
+      } @else {
+        <div class="form-stack">
+          @if (formError()) {
+            <p class="alert alert--danger" role="alert">{{ formError() }}</p>
+          }
+          @if (success()) {
+            <p class="alert alert--success" role="status">{{ success() }}</p>
+          }
 
-<div class="container">
+          <app-text-field formControlName="name" label="Nome" autocomplete="name" />
+          <app-text-field
+            formControlName="email"
+            type="email"
+            label="E-mail"
+            autocomplete="email"
+          />
+          <app-text-field
+            formControlName="password"
+            type="password"
+            label="Nova senha (opcional)"
+            autocomplete="new-password"
+          />
 
-    <div class="about-us">
-        <h1>Sobre Nós</h1>
-        <p>O SEALTH (Sistema Eficaz de Administração Logística e Tecnologia Hospitalar) é mais do que um projeto; é uma inovação projetada para transformar a gestão hospitalar. Fundindo tecnologia de ponta com especialização em saúde, nossa equipe comprometida concebeu uma solução completa e eficiente para atender às demandas exclusivas dos usuários de instituições médicas.</p>
-    </div>
+          <button type="submit" class="btn btn--primary" [disabled]="saving()">
+            {{ saving() ? 'Salvando...' : 'Salvar alterações' }}
+          </button>
+        </div>
+      }
+    </form>
 
-    <div class="config-form">
-        <form (ngSubmit)="updateUser()">
-            <div class="form-group">
-                <div class="label-wrapper">
-                    <label for="name">Nome:</label>
-                </div>
-                <div class="input-wrapper">
-                    <input type="text" id="name" name="name" [(ngModel)]="form.name">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="label-wrapper">
-                    <label for="email">Email:</label>
-                </div>
-                <div class="input-wrapper">
-                    <input type="email" id="email" name="email" [(ngModel)]="form.email">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="label-wrapper">
-                    <label for="password">Nova senha:</label>
-                </div>
-                <div class="input-wrapper">
-                    <input type="password" id="password" name="password" [(ngModel)]="form.password">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="button-submit">
-                    <button type="submit">Salvar Alterações</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<div class="image-container">
-    <img src="/assets/images/illustrations/config.webp" alt="Imagem Direita" class="right-image">
-</div>
+    <img
+      class="illustration"
+      src="/assets/images/illustrations/config.webp"
+      alt=""
+      width="800"
+      height="586"
+    />
+  </div>
+</app-shell>

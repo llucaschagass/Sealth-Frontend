@@ -1,113 +1,98 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import Swal from 'sweetalert2';
-import { describeError } from '../../core/api-error';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AppShellComponent } from '../../components/app-shell/app-shell.component';
+import { TextFieldComponent } from '../../components/text-field/text-field.component';
+import { applyServerErrors } from '../../core/form-errors';
 import { SessionService } from '../../core/session.service';
 import { UserService } from '../../services/user.service';
+import { ApiError } from '../../../types/api-error.type';
 import { UpdateUserRequest } from '../../../types/user.type';
+
+const MIN_PASSWORD_LENGTH = 6;
 
 @Component({
   selector: 'app-config',
-  templateUrl: './config.component.html',
-  styleUrls: ['./config.component.scss'],
   standalone: true,
-  imports: [FormsModule],
+  imports: [ReactiveFormsModule, AppShellComponent, TextFieldComponent],
+  templateUrl: './config.component.html',
+  styleUrl: './config.component.scss',
 })
 export class ConfigComponent implements OnInit {
-  private readonly session = inject(SessionService);
-  private readonly router = inject(Router);
   private readonly userService = inject(UserService);
+  private readonly session = inject(SessionService);
 
-  username = '';
-  currentName = '';
-  currentEmail = '';
-  form = { name: '', email: '', password: '' };
+  readonly form = inject(NonNullableFormBuilder).group({
+    name: ['', [Validators.required, Validators.minLength(3)]],
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.minLength(MIN_PASSWORD_LENGTH)]],
+  });
+
+  readonly loading = signal(true);
+  readonly saving = signal(false);
+  readonly formError = signal<string | null>(null);
+  readonly success = signal<string | null>(null);
+
+  private current = { name: '', email: '' };
 
   ngOnInit(): void {
-    this.username = this.session.firstName;
-    this.loadUser();
-  }
-
-  private loadUser(): void {
     this.userService.getUserData().subscribe({
       next: (user) => {
-        this.currentName = user.name;
-        this.currentEmail = user.email;
+        this.current = { name: user.name, email: user.email };
+        this.form.patchValue(this.current);
+        this.loading.set(false);
       },
-      error: (error) => this.showError('Não foi possível obter os dados do usuário.', error),
+      error: (error: ApiError) => {
+        this.formError.set(error.message);
+        this.loading.set(false);
+      },
     });
   }
 
-  updateUser(): void {
-    const changes = this.pendingChanges();
-    if (Object.keys(changes).length === 0) {
-      Swal.fire({
-        title: 'Atenção',
-        text: 'Preencha ao menos um campo com um valor diferente do atual.',
-        icon: 'warning',
-        confirmButtonColor: '#046B46',
-      });
+  submit(): void {
+    this.success.set(null);
+    this.formError.set(null);
+
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
       return;
     }
 
+    const changes = this.pendingChanges();
+    if (Object.keys(changes).length === 0) {
+      this.formError.set('Nenhuma alteração para salvar.');
+      return;
+    }
+
+    this.saving.set(true);
     this.userService.updateUserData(changes).subscribe({
-      next: () => {
-        Swal.fire({
-          title: 'Sucesso',
-          text: 'Dados atualizados! Entre novamente para continuar.',
-          icon: 'success',
-          confirmButtonColor: '#046B46',
-        }).then(() => this.session.logout());
+      next: (user) => {
+        this.current = { name: user.name, email: user.email };
+        this.session.updateName(user.name);
+        this.form.patchValue({ ...this.current, password: '' });
+        this.form.markAsPristine();
+        this.saving.set(false);
+        this.success.set('Dados atualizados com sucesso!');
       },
-      error: (error) => this.showError('Não foi possível atualizar os dados do usuário.', error),
+      error: (error: ApiError) => {
+        this.saving.set(false);
+        this.formError.set(applyServerErrors(this.form, error));
+      },
     });
   }
 
-  /** Apenas campos preenchidos e diferentes dos atuais são enviados. */
+  /** Apenas campos diferentes dos atuais são enviados; senha só quando preenchida. */
   private pendingChanges(): UpdateUserRequest {
-    const name = this.form.name.trim();
-    const email = this.form.email.trim();
+    const { name, email, password } = this.form.getRawValue();
     const changes: UpdateUserRequest = {};
-    if (name && name !== this.currentName) {
-      changes.name = name;
+    if (name.trim() !== this.current.name) {
+      changes.name = name.trim();
     }
-    if (email && email !== this.currentEmail) {
-      changes.email = email;
+    if (email.trim() !== this.current.email) {
+      changes.email = email.trim();
     }
-    if (this.form.password) {
-      changes.password = this.form.password;
+    if (password) {
+      changes.password = password;
     }
     return changes;
-  }
-
-  private showError(fallback: string, error: unknown): void {
-    Swal.fire({
-      title: 'Erro',
-      text: describeError(error, fallback),
-      icon: 'error',
-      confirmButtonColor: '#046B46',
-    });
-  }
-
-  redirectToHome(): void {
-    this.router.navigate(['/home']);
-  }
-
-  confirmLogout(): void {
-    Swal.fire({
-      title: 'Você tem certeza?',
-      text: 'Deseja realmente sair?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#046B46',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Certeza',
-      cancelButtonText: 'Cancelar',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.session.logout();
-      }
-    });
   }
 }

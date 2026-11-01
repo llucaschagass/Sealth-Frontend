@@ -1,56 +1,59 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './pages/login/login.component';
-import { SignupComponent } from './pages/signup/signup.component';
-import { HomeComponent } from './pages/home/home.component';
-import { InfoComponent } from './pages/info/info.component';
-import { ConfigComponent } from './pages/config/config.component';
-import { HealthComponent } from './pages/health/health.component';
-import { AppointmentsComponent } from './pages/appointments/appointments.component';
-import { MedicinesComponent } from './pages/medicines/medicines.component';
 import { authGuard } from './core/auth.guard';
-import { MainComponent } from './pages/main/main.component';
 
 export const routes: Routes = [
-    {
-        path: "",
-        component: MainComponent
-    },
-    {
-        path: "login",
-        component: LoginComponent
-    },
-    {
-        path: "signup",
-        component: SignupComponent
-    },
-    {
-        path: "home",
-        component: HomeComponent,
-        canActivate: [authGuard]
-    },
-    {
-        path: "info",
-        component: InfoComponent,
-        canActivate: [authGuard]
-    },
-    {
-        path: "config",
-        component: ConfigComponent,
-        canActivate: [authGuard]
-    },
-    {
-        path: "health",
-        component: HealthComponent,
-        canActivate: [authGuard]
-    },
-    {
-        path: "appointment",
-        component: AppointmentsComponent,
-        canActivate: [authGuard]
-    },
-    {
-        path: "medicines",
-        component: MedicinesComponent,
-        canActivate: [authGuard]
-    }
+  {
+    path: '',
+    title: 'Sealth | Sua saúde em boas mãos',
+    loadComponent: () => import('./pages/main/main.component').then((m) => m.MainComponent),
+  },
+  {
+    path: 'login',
+    title: 'Entrar | Sealth',
+    loadComponent: () => import('./pages/login/login.component').then((m) => m.LoginComponent),
+  },
+  {
+    path: 'signup',
+    title: 'Criar conta | Sealth',
+    loadComponent: () => import('./pages/signup/signup.component').then((m) => m.SignupComponent),
+  },
+  {
+    path: 'home',
+    title: 'Início | Sealth',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/home/home.component').then((m) => m.HomeComponent),
+  },
+  {
+    path: 'info',
+    title: 'Informações importantes | Sealth',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/info/info.component').then((m) => m.InfoComponent),
+  },
+  {
+    path: 'config',
+    title: 'Configurações | Sealth',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/config/config.component').then((m) => m.ConfigComponent),
+  },
+  {
+    path: 'health',
+    title: 'Minha saúde | Sealth',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/health/health.component').then((m) => m.HealthComponent),
+  },
+  {
+    path: 'appointment',
+    title: 'Minhas consultas | Sealth',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/appointments/appointments.component').then((m) => m.AppointmentsComponent),
+  },
+  {
+    path: 'medicines',
+    title: 'Meus medicamentos | Sealth',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/medicines/medicines.component').then((m) => m.MedicinesComponent),
+  },
+  { path: '**', redirectTo: '' },
 ];
