@@ -1,142 +1,30 @@
-<header class="info-header">
-    <img src="/assets/png/logo-big.png" alt="" class="logo" (click)="redirectToHome()">
-    <div class="title-container">
-        <h1 class="title">Informações Importantes</h1>
-    </div>
-    
-    <div class="overlay">
-      <img src="/assets/png/user-icon.png" alt="User Icon" (click)="confirmLogout()">
-      <h1>Olá {{ username }}</h1>
-  </div>
-  
-</header>
+<app-shell title="Informações importantes">
+  <p class="intro">Artigos selecionados para cuidar melhor da sua saúde e da sua família.</p>
 
-<div class="grid-container">
-    <div class="grid-item">
-      <div class="balloon">
-        <div class="balloon-content">
-          <img src="/assets/images/weight.png" alt="Capa 1">
-          <h2>Causas e riscos da obesidade</h2>
-          <p>Alerta sobre riscos que a doença traz a saúde.</p>
-          <a href="https://vidasaudavel.einstein.br/obesidade-oms-alerta-sobre-riscos-que-a-doenca-traz-a-saude/">Link para o Artigo</a>
+  <ul class="articles">
+    @for (article of articles; track article.url) {
+      <li class="card article">
+        <img
+          class="article__image"
+          [ngSrc]="imageSrc(article.image)"
+          width="640"
+          height="640"
+          alt=""
+        />
+        <div class="article__body">
+          <h2>{{ article.title }}</h2>
+          <p>{{ article.summary }}</p>
+          <a
+            class="article__link"
+            [href]="article.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            [attr.aria-label]="'Ler artigo: ' + article.title + ' (abre em nova aba)'"
+          >
+            Ler artigo <app-icon name="external-link" />
+          </a>
         </div>
-        <div class="balloon-arrow"></div>
-      </div>
-    </div>
-    
-    <div class="grid-item">
-      <div class="balloon">
-        <div class="balloon-content">
-          <img src="/assets/images/mosquito.png" alt="Capa 2">
-          <h2>Os 4 diferentes tipos de Dengue </h2>
-          <p>Variações estão ligadas à possibilidade de reinfecção.</p>
-          <a href="https://www.cnnbrasil.com.br/saude/conheca-os-4-diferentes-tipos-de-dengue-que-circulam-no-brasil/">Link para o Artigo</a>
-        </div>
-        <div class="balloon-arrow"></div>
-      </div>
-    </div>
-    
-    <div class="grid-item">
-      <div class="balloon">
-        <div class="balloon-content">
-          <img src="/assets/images/cheetos.png" alt="Capa 3">
-          <h2>Alimentos Ultraprocessados</h2>
-          <p>Alimentos prejudiciais estão associados às doenças crônicas.</p>
-          <a href="https://www.gov.br/saude/pt-br/assuntos/saude-brasil/eu-quero-me-alimentar-melhor/noticias/2022/qual-e-a-relacao-entre-consumo-de-ultraprocessados-e-risco-de-mortalidade">Link para o Artigo</a>
-        </div>
-        <div class="balloon-arrow"></div>
-      </div>
-    </div>
-    
-    <div class="grid-item">
-      <div class="balloon">
-        <div class="balloon-content">
-          <img src="/assets/images/work-out.png" alt="Capa 4">
-          <h2>Importância dos Exercícios Físicos</h2>
-          <p>A prática de atividades físicas é fundamental.</p>
-          <a href="https://www.todamateria.com.br/a-importancia-da-atividade-fisica-para-a-saude/">Link para o Artigo </a>
-        </div>
-        <div class="balloon-arrow"></div>
-      </div>
-    </div>
-    
-    <div class="grid-item">
-      <div class="balloon">
-        <div class="balloon-content">
-          <img src="/assets/images/healthy-meal.png" alt="Capa 5">
-          <h2>Dicas para alimentação saudável</h2>
-          <p>Aprenda a manter uma alimentação saudável.</p>
-          <a href="https://www.unimed.coop.br/viver-bem/alimentacao/dez-dicas-para-uma-alimentacao-saudavel">Link para o Artigo</a>
-        </div>
-        <div class="balloon-arrow"></div>
-      </div>
-    </div>
-    
-    <div class="grid-item">
-      <div class="balloon">
-        <div class="balloon-content">
-          <img src="/assets/images/watter.png" alt="Capa 6">
-          <h2>Com Dengue? Beba água!</h2>
-          <p>Importância da hidratação no diagnóstico de dengue.</p>
-          <a href="https://www.acqualive.com.br/blogs/news/dengue-e-hidratacao-uma-abordagem-vital-no-tratamento-e-recuperacao">Link para o Artigo</a>
-        </div>
-        <div class="balloon-arrow"></div>
-      </div>
-    </div>
-    
-    <div class="grid-item">
-      <div class="balloon">
-        <div class="balloon-content">
-          <img src="/assets/images/running.png" alt="Capa 7">
-          <h2>Dicas para começar a se exercitar</h2>
-          <p>Confira dicas para manter uma rotina de treinos.</p>
-          <a href="https://g1.globo.com/especial-publicitario/smart-fit/noticia/2021/02/22/guia-pratico-para-comecar-a-se-exercitar-e-fazer-da-atividade-fisica-um-habito.ghtml">Link para o Artigo</a>
-        </div>
-        <div class="balloon-arrow"></div>
-      </div>
-    </div>
-    
-    <div class="grid-item">
-      <div class="balloon">
-        <div class="balloon-content">
-          <img src="/assets/images/no-mosquito.png" alt="Capa 8">
-          <h2>Prevenção contra a Dengue</h2>
-          <p>Quatro medidas simples para evitar a doença.</p>
-          <a href="https://www.tuasaude.com/prevencao-da-dengue/">Link para o Artigo</a>
-        </div>
-        <div class="balloon-arrow"></div>
-      </div>
-    </div>
-
-    <div class="grid-item">
-      <div class="balloon">
-        <div class="balloon-content">
-          <img src="/assets/images/vaccine.png" alt="Capa 9">
-          <h2>Novidades sobre a vacinação</h2>
-          <p>Campanha de vacinação contra a gripe começa oficialmente.</p>
-          <a href="https://www.gov.br/saude/pt-br/assuntos/noticias/2024/marco/campanha-de-vacinacao-contra-a-gripe-comeca-oficialmente-nesta-segunda-feira-25">Link para o Artigo</a>
-        </div>
-        <div class="balloon-arrow"></div>
-      </div>
-    </div>
-
-    <div class="grid-item">
-      <div class="balloon">
-        <div class="balloon-content">
-          <img src="/assets/images/covid.png" alt="Capa 10">
-          <h2>Fake News vacina COVID-19</h2>
-          <p>É falsa a informação que múltiplas doses criam um “super-vírus”.</p>
-          <a href="https://www.gov.br/saude/pt-br/assuntos/saude-com-ciencia/noticias/2024/janeiro/e-falsa-a-informacao-que-a-aplicacao-de-multiplas-doses-da-vacina-contra-covid-19-pode-criar-um-201csuper-virus201d">Link para o Artigo</a>
-        </div>
-        <div class="balloon-arrow"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="container">
-    <!-- Imagem à esquerda -->
-    <img src="/assets/png/student-one.png" alt="Imagem Esquerda" class="left-image">
-  
-    <!-- Imagem à direita -->
-    <img src="/assets/png/student-two.png" alt="Imagem Direita" class="right-image">
-  </div>
+      </li>
+    }
+  </ul>
+</app-shell>

@@ -1,48 +1,20 @@
-import { Component, inject } from '@angular/core';
-import { SessionService } from '../../core/session.service';
-import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
+import { NgOptimizedImage } from '@angular/common';
+import { Component } from '@angular/core';
+import { AppShellComponent } from '../../components/app-shell/app-shell.component';
+import { IconComponent } from '../../components/icon/icon.component';
+import { INFO_ARTICLES } from './info-articles';
 
 @Component({
   selector: 'app-info',
   standalone: true,
-  imports: [],
+  imports: [NgOptimizedImage, AppShellComponent, IconComponent],
   templateUrl: './info.component.html',
-  styleUrl: './info.component.scss'
+  styleUrl: './info.component.scss',
 })
 export class InfoComponent {
-  private readonly session = inject(SessionService);
-  constructor(private router: Router) {}
-  
-  redirectToHome(): void {
-    this.router.navigate(['/home']);
-  }
+  readonly articles = INFO_ARTICLES;
 
-  confirmLogout(): void {
-    Swal.fire({
-      title: 'Você tem certeza?',
-      text: 'Deseja realmente sair?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#046B46',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Certeza',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.session.logout();
-      }
-    });
+  imageSrc(name: string): string {
+    return `/assets/images/info/${name}.webp`;
   }
-
-  username: string = '';
-  
-  ngOnInit(): void {
-    this.getUsernameFromLocalStorage();
-  }
-  
-  getUsernameFromLocalStorage(): void {
-    this.username = this.session.firstName;
-  }
-
 }

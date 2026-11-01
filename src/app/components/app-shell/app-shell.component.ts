@@ -1,12 +1,13 @@
 import { Component, ElementRef, Input, ViewChild, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { LogoComponent } from '../logo/logo.component';
 import { SessionService } from '../../core/session.service';
 
 /** Moldura das telas autenticadas: cabeçalho com marca, título da página e saída da conta. */
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, LogoComponent],
   templateUrl: './app-shell.component.html',
   styleUrl: './app-shell.component.scss',
 })

@@ -26,10 +26,18 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "src/favicon.ico",
+              {
+                "glob": "favicon*",
+                "input": "src",
+                "output": "/"
+              },
               "src/assets"
             ],
             "styles": [
+              "@fontsource/poppins/latin-400.css",
+              "@fontsource/poppins/latin-500.css",
+              "@fontsource/poppins/latin-600.css",
+              "@fontsource/poppins/latin-700.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -92,7 +100,11 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "src/favicon.ico",
+              {
+                "glob": "favicon*",
+                "input": "src",
+                "output": "/"
+              },
               "src/assets"
             ],
             "styles": [

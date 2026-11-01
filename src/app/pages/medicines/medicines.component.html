@@ -1,11 +1,11 @@
 <header class="medicines-header">
-    <img src="/assets/png/logo-big.png" alt="" class="logo" (click)="redirectToHome()">
+    <img src="/assets/images/brand/logo.webp" alt="" class="logo" (click)="redirectToHome()">
     <div class="title-container">
         <h1 class="title">Meus Medicamentos</h1>
     </div>
     
     <div class="overlay">
-        <img src="/assets/png/user-icon.png" alt="User Icon" (click)="confirmLogout()">
+        <img src="/assets/images/icons/user.webp" alt="User Icon" (click)="confirmLogout()">
         <h1>Olá {{ username }}</h1>
     </div>
     
@@ -27,12 +27,12 @@
             <h2 class="module-title">Download PDF</h2>
             <div class="download-content" *ngIf="selectedMedicine">
                 <a href="#" (click)="downloadPDF(selectedMedicine, $event)">
-                    <img src="/assets/png/download-icon.png" alt="Download" class="download-icon">
+                    <img src="/assets/images/icons/download.webp" alt="Download" class="download-icon">
                     <p class="select-text">Baixar {{ selectedMedicine }}</p>
                 </a>
             </div>
             <div *ngIf="!selectedMedicine" class="select-text">Selecione um medicamento</div>
         </div>
-        <img src="/assets/png/lab-background.png" alt="Imagem" class="image-corner">
+        <img src="/assets/images/illustrations/lab.webp" alt="Imagem" class="image-corner">
     </div> 
 </div>

@@ -32,9 +32,10 @@
     min-height: var(--header-height);
   }
 
-  &__brand img {
-    width: 5.5rem;
-    height: auto;
+  &__brand {
+    display: flex;
+    font-size: 1rem;
+    text-decoration: none;
   }
 
   &__title {
