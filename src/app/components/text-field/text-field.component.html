@@ -1,0 +1,32 @@
+<div class="field" [class.field--invalid]="errorMessage">
+  <label class="field__label" [attr.for]="id">{{ label }}</label>
+  <div class="field__control">
+    <input
+      class="field__input"
+      [id]="id"
+      [type]="inputType"
+      [value]="value"
+      [disabled]="disabled"
+      [attr.placeholder]="placeholder || null"
+      [attr.autocomplete]="autocomplete"
+      [attr.aria-invalid]="errorMessage ? true : null"
+      [attr.aria-describedby]="errorMessage ? id + '-error' : null"
+      (input)="onInput($event)"
+      (blur)="onBlur()"
+    />
+    @if (type === 'password') {
+      <button
+        type="button"
+        class="field__toggle"
+        [attr.aria-pressed]="passwordVisible"
+        (click)="togglePassword()"
+      >
+        {{ passwordVisible ? 'Ocultar' : 'Mostrar' }}
+        <span class="visually-hidden">senha</span>
+      </button>
+    }
+  </div>
+  @if (errorMessage) {
+    <p class="field__error" [id]="id + '-error'" role="alert">{{ errorMessage }}</p>
+  }
+</div>

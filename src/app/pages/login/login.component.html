@@ -1,31 +1,30 @@
-<app-default-login-layout 
-    title = "Faça login em sua conta"
-    primaryBtnText = "Login"
-    secondaryBtnText = "Sign Up"
-    (submit)="submit()"
-    (navigate)="navigate()"
-    [disablePrimaryBtn]="!loginForm.valid"
-    >
-    <form [formGroup] = "loginForm">
-        <app-primary-input
-            formControlName="email"
-            inputName="email"
-            type="email"
-            label="Email"
-            placeholder="exemplo@gmail.com"
-        >
-            <img src="/assets/png/email-icon.svg">
-        </app-primary-input>
+<app-auth-layout
+  title="Entre na sua conta"
+  subtitle="Acesse suas consultas, medicamentos e informações de saúde."
+>
+  <form class="form-stack" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    @if (formError) {
+      <p class="alert alert--danger" role="alert">{{ formError }}</p>
+    }
 
-        <app-primary-input
-            formControlName="password"
-            inputName="password"
-            type="password"
-            label="Senha"
-        >
-            <img src="/assets/png/password-icon.svg">
-        </app-primary-input>
-        <span (click)="recoverPassword()">Esqueceu a senha?</span>
-    </form>
-</app-default-login-layout>
+    <app-text-field
+      formControlName="email"
+      type="email"
+      label="E-mail"
+      placeholder="exemplo@gmail.com"
+      autocomplete="email"
+    />
+    <app-text-field
+      formControlName="password"
+      type="password"
+      label="Senha"
+      autocomplete="current-password"
+    />
 
+    <button type="submit" class="btn btn--primary btn--block" [disabled]="loading">
+      {{ loading ? 'Entrando...' : 'Entrar' }}
+    </button>
+  </form>
+
+  <p authFooter>Ainda não tem conta? <a routerLink="/signup">Cadastre-se</a></p>
+</app-auth-layout>

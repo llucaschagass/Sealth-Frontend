@@ -1,0 +1,27 @@
+<a class="skip-link" href="#main-content">Ir para o conteúdo</a>
+
+<header class="shell__header">
+  <div class="layout-container shell__bar">
+    <a class="shell__brand" routerLink="/home" aria-label="Sealth: ir para o início">
+      <img src="/assets/png/logo.png" alt="" width="203" height="81" />
+    </a>
+    <h1 class="shell__title">{{ title }}</h1>
+    <div class="shell__user">
+      <span class="shell__greeting">Olá, {{ firstName }}</span>
+      <button type="button" class="btn btn--ghost" (click)="openLogout()">Sair</button>
+    </div>
+  </div>
+</header>
+
+<main id="main-content" class="layout-container shell__main" tabindex="-1">
+  <ng-content />
+</main>
+
+<dialog #logoutDialog class="dialog" aria-labelledby="logout-title" (click)="onDialogClick($event)">
+  <h2 id="logout-title">Deseja realmente sair?</h2>
+  <p>Você precisará entrar novamente para acessar suas informações.</p>
+  <div class="dialog__actions">
+    <button type="button" class="btn btn--secondary" (click)="closeLogout()">Cancelar</button>
+    <button type="button" class="btn btn--primary" (click)="confirmLogout()">Sair</button>
+  </div>
+</dialog>

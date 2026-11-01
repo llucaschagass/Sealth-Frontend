@@ -1,0 +1,12 @@
+// Breakpoints mobile-first: use "up(md)" para estilos a partir de tablet.
+$breakpoints: (
+  sm: 40rem,
+  md: 60rem,
+  lg: 75rem,
+);
+
+@mixin up($name) {
+  @media (min-width: map-get($breakpoints, $name)) {
+    @content;
+  }
+}

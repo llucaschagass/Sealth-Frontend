@@ -1,0 +1,96 @@
+@use '../../../styles/mixins' as *;
+
+.skip-link {
+  position: absolute;
+  inset-block-start: var(--space-2);
+  inset-inline-start: var(--space-2);
+  z-index: 10;
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-primary);
+  border-radius: var(--radius-sm);
+  color: var(--color-on-primary);
+  transform: translateY(-200%);
+
+  &:focus {
+    transform: none;
+  }
+}
+
+.shell {
+  &__header {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 5;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  &__bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    min-height: var(--header-height);
+  }
+
+  &__brand img {
+    width: 5.5rem;
+    height: auto;
+  }
+
+  &__title {
+    flex: 1;
+    min-width: 0;
+    font-size: var(--font-size-md);
+
+    @include up(sm) {
+      font-size: var(--font-size-lg);
+    }
+  }
+
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  &__greeting {
+    display: none;
+    color: var(--color-text-muted);
+
+    @include up(sm) {
+      display: inline;
+    }
+  }
+
+  &__main {
+    padding-block: var(--space-6);
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+.dialog {
+  width: min(24rem, calc(100% - 2rem));
+  margin: auto;
+  padding: var(--space-5);
+  border: 0;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+
+  &::backdrop {
+    background: rgb(20 35 28 / 50%);
+  }
+
+  p {
+    margin-block: var(--space-2) var(--space-5);
+    color: var(--color-text-muted);
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-3);
+  }
+}

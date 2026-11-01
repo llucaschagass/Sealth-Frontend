@@ -1,0 +1,18 @@
+<main class="auth">
+  <section class="auth__panel">
+    <img class="auth__logo" src="/assets/png/logo.png" alt="Sealth" width="203" height="81" />
+    <h1 class="auth__title">{{ title }}</h1>
+    @if (subtitle) {
+      <p class="auth__subtitle">{{ subtitle }}</p>
+    }
+    <ng-content />
+    <div class="auth__footer">
+      <ng-content select="[authFooter]" />
+    </div>
+  </section>
+
+  <div class="auth__hero">
+    <p class="auth__tagline">Transformando a saúde, conectando você ao cuidado.</p>
+    <img src="/assets/png/default-ilustration.png" alt="" width="3415" height="1468" />
+  </div>
+</main>

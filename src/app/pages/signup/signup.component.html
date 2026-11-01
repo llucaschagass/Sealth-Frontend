@@ -1,48 +1,39 @@
-<app-default-login-layout 
-    title="Crie sua conta agora!"
-    primaryBtnText="Sign Up"
-    secondaryBtnText="Login"
-    (submit)="submit()"
-    (navigate)="navigate()"
-    [disablePrimaryBtn]="!signupForm.valid"
->
-    <form [formGroup]="signupForm">
-        <app-primary-input
-            formControlName="name"
-            inputName="name"
-            type="text"
-            label="Seu nome"
-            placeholder="Tony Stark"
-        >
-            <img src="/assets/png/email-icon.svg">
-        </app-primary-input>
+<app-auth-layout title="Crie sua conta" subtitle="Leva menos de um minuto e é gratuito.">
+  <form class="form-stack" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    @if (formError) {
+      <p class="alert alert--danger" role="alert">{{ formError }}</p>
+    }
 
-        <app-primary-input
-            formControlName="email"
-            inputName="email"
-            type="email"
-            label="Email"
-            placeholder="exemplo@gmail.com"
-        >
-            <img src="/assets/png/email-icon.svg">
-        </app-primary-input>
+    <app-text-field
+      formControlName="name"
+      label="Seu nome"
+      placeholder="Maria Souza"
+      autocomplete="name"
+    />
+    <app-text-field
+      formControlName="email"
+      type="email"
+      label="E-mail"
+      placeholder="exemplo@gmail.com"
+      autocomplete="email"
+    />
+    <app-text-field
+      formControlName="password"
+      type="password"
+      label="Senha"
+      autocomplete="new-password"
+    />
+    <app-text-field
+      formControlName="passwordConfirm"
+      type="password"
+      label="Confirme sua senha"
+      autocomplete="new-password"
+    />
 
-        <app-primary-input
-            formControlName="password"
-            inputName="password"
-            type="password"
-            label="Senha"
-        >
-            <img src="/assets/png/password-icon.svg">
-        </app-primary-input>
+    <button type="submit" class="btn btn--primary btn--block" [disabled]="loading">
+      {{ loading ? 'Criando conta...' : 'Criar conta' }}
+    </button>
+  </form>
 
-        <app-primary-input
-            formControlName="passwordConfirm"
-            inputName="passwordConfirm"
-            type="password"
-            label="Confirme sua Senha"
-        >
-            <img src="/assets/png/password-icon.svg"/>
-        </app-primary-input>
-    </form>
-</app-default-login-layout>
+  <p authFooter>Já tem conta? <a routerLink="/login">Entrar</a></p>
+</app-auth-layout>
