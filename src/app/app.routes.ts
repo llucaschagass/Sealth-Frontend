@@ -7,7 +7,7 @@ import { ConfigComponent } from './pages/config/config.component';
 import { HealthComponent } from './pages/health/health.component';
 import { AppointmentsComponent } from './pages/appointments/appointments.component';
 import { MedicinesComponent } from './pages/medicines/medicines.component';
-import { AuthGuard } from './services/auth-guard.service';
+import { authGuard } from './core/auth.guard';
 import { MainComponent } from './pages/main/main.component';
 
 export const routes: Routes = [
@@ -26,31 +26,31 @@ export const routes: Routes = [
     {
         path: "home",
         component: HomeComponent,
-        canActivate:[AuthGuard]
+        canActivate: [authGuard]
     },
     {
         path: "info",
         component: InfoComponent,
-        canActivate:[AuthGuard]
+        canActivate: [authGuard]
     },
     {
         path: "config",
         component: ConfigComponent,
-        canActivate:[AuthGuard]
+        canActivate: [authGuard]
     },
     {
         path: "health",
         component: HealthComponent,
-        canActivate:[AuthGuard]
+        canActivate: [authGuard]
     },
     {
         path: "appointment",
         component: AppointmentsComponent,
-        canActivate:[AuthGuard]
+        canActivate: [authGuard]
     },
     {
         path: "medicines",
         component: MedicinesComponent,
-        canActivate:[AuthGuard]
+        canActivate: [authGuard]
     }
 ];

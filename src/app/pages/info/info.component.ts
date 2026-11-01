@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { SessionService } from '../../core/session.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
@@ -10,6 +11,7 @@ import Swal from 'sweetalert2';
   styleUrl: './info.component.scss'
 })
 export class InfoComponent {
+  private readonly session = inject(SessionService);
   constructor(private router: Router) {}
   
   redirectToHome(): void {
@@ -28,7 +30,7 @@ export class InfoComponent {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location.href = '/login'; 
+        this.session.logout();
       }
     });
   }
@@ -40,12 +42,7 @@ export class InfoComponent {
   }
   
   getUsernameFromLocalStorage(): void {
-    const storedUsername = sessionStorage.getItem('username');
-    if (storedUsername) {
-      const parts = storedUsername.split(' ');
-      const firstName = parts[0];
-      this.username = firstName;
-    }
+    this.username = this.session.firstName;
   }
 
 }

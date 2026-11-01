@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { SessionService } from '../../core/session.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { MedicinesService } from '../../services/medicines.service';
@@ -14,6 +15,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './medicines.component.scss'
 })
 export class MedicinesComponent {
+  private readonly session = inject(SessionService);
   username: string = '';
   medicines: string[] = [];
   selectedMedicine: string = '';
@@ -42,7 +44,7 @@ export class MedicinesComponent {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location.href = '/login'; 
+        this.session.logout();
       }
     });
   }
@@ -70,11 +72,6 @@ export class MedicinesComponent {
   }
   
   getUsernameFromLocalStorage(): void {
-    const storedUsername = sessionStorage.getItem('username');
-    if (storedUsername) {
-      const parts = storedUsername.split(' ');
-      const firstName = parts[0];
-      this.username = firstName;
-    }
+    this.username = this.session.firstName;
   }
 }

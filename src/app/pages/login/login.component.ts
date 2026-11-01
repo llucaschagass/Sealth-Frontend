@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { SessionService } from '../../core/session.service';
+import { describeError } from '../../core/api-error';
 import { DefaultLoginLayoutComponent } from '../../components/default-login-layout/default-login-layout.component';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PrimaryInputComponent } from '../../components/primary-input/primary-input.component';
@@ -22,6 +24,7 @@ import Swal from 'sweetalert2';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
+  private readonly session = inject(SessionService);
   loginForm!: FormGroup;
   constructor(
     private router: Router,
@@ -41,10 +44,10 @@ export class LoginComponent {
   submit(){
     this.loginService.login(this.loginForm.value.email, this.loginForm.value.password).subscribe({
       next: () => {this.router.navigate(['/home']);},
-      error: () => {
+      error: (error) => {
         Swal.fire({
           title: 'Erro no Login',
-          text: 'E-mail ou senha incorretos. Por favor, tente novamente.',
+          text: describeError(error),
           icon: 'error',
           confirmButtonColor: '#046B46',
           cancelButtonColor: '#d33',
@@ -90,7 +93,7 @@ export class LoginComponent {
   }
 
   clearLocalStorage(){
-    localStorage.clear();
+    this.session.clear();
   }
 
 }

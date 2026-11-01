@@ -1,151 +1,95 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms'; 
-import { UserService } from '../../services/user.service';
+import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { User } from '../../../types/user.type';
+import { describeError } from '../../core/api-error';
+import { SessionService } from '../../core/session.service';
+import { UserService } from '../../services/user.service';
+import { UpdateUserRequest } from '../../../types/user.type';
 
 @Component({
   selector: 'app-config',
   templateUrl: './config.component.html',
   styleUrls: ['./config.component.scss'],
   standalone: true,
-  imports: [
-    FormsModule 
-  ]
+  imports: [FormsModule],
 })
 export class ConfigComponent implements OnInit {
-  user: User = {
-    name: '',
-    email: '',
-    password: '',
-    id: '',
-    newName: '',
-    newEmail: '',
-    newPassword: ''
-  };
-  userId: string = ''; 
-  username: string = ''; 
-  oldName: string = '';
-  oldEmail: string = '';
+  private readonly session = inject(SessionService);
+  private readonly router = inject(Router);
+  private readonly userService = inject(UserService);
 
-  constructor(private router: Router, private userService: UserService) {}
+  username = '';
+  currentName = '';
+  currentEmail = '';
+  form = { name: '', email: '', password: '' };
 
   ngOnInit(): void {
-    this.getUsernameFromLocalStorage();
-    this.getUserData();
-    this.user = {
-      name: '',
-      email: '',
-      password: '',
-      id: '',
-      newName: '',
-      newEmail: '',
-      newPassword: ''
-    };
+    this.username = this.session.firstName;
+    this.loadUser();
   }
 
-  getUserData(): void {
+  private loadUser(): void {
     this.userService.getUserData().subscribe({
-      next: (userData) => {
-        this.user = userData;
-        this.userId = userData.id;
-        this.oldName = localStorage.getItem('user-name') || '';
-        this.oldEmail = localStorage.getItem('user-email') || '';
+      next: (user) => {
+        this.currentName = user.name;
+        this.currentEmail = user.email;
       },
-      error: () => {
-        Swal.fire({
-          title: 'Erro',
-          text: 'Não foi possível obter os dados do usuário.',
-          icon: 'error',
-          confirmButtonColor: '#046B46',
-        });
-      }
+      error: (error) => this.showError('Não foi possível obter os dados do usuário.', error),
     });
   }
 
   updateUser(): void {
-    const oldName = localStorage.getItem('user-name');
-    const oldEmail = localStorage.getItem('user-email');
-  
-    if ((oldName === this.user.newName) && (oldEmail === this.user.newEmail)) {
+    const changes = this.pendingChanges();
+    if (Object.keys(changes).length === 0) {
       Swal.fire({
         title: 'Atenção',
-        text: 'Os itens que você está tentando alterar são iguais aos atuais. Por favor, faça alterações válidas.',
+        text: 'Preencha ao menos um campo com um valor diferente do atual.',
         icon: 'warning',
         confirmButtonColor: '#046B46',
       });
       return;
     }
-  
-    if ((oldName === this.user.newName) || (oldEmail === this.user.newEmail)) {
-      Swal.fire({
-        title: 'Atenção',
-        text: 'Um dos itens que você está tentando alterar é igual ao atual. Deseja continuar?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#046B46',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Sim, continuar',
-        cancelButtonText: 'Cancelar'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.executeUserUpdate();
-        }
-      });
-      return;
-    }
-  
-    this.executeUserUpdate();
-  }
-  
-  executeUserUpdate(): void {
-    if (!this.userId) {
-      Swal.fire({
-        title: 'Erro',
-        text: 'Não foi possível obter o ID do usuário.',
-        icon: 'error',
-        confirmButtonColor: '#046B46',
-      });
-      return;
-    }
-  
-    const updatedUserData = {
-      name: this.user.newName,
-      email: this.user.newEmail,
-      password: this.user.newPassword
-    };
-  
-    this.userService.updateUserData(updatedUserData).subscribe({
-      next: (response) => {
+
+    this.userService.updateUserData(changes).subscribe({
+      next: () => {
         Swal.fire({
           title: 'Sucesso',
-          text: 'Dados do usuário atualizados com sucesso!',
+          text: 'Dados atualizados! Entre novamente para continuar.',
           icon: 'success',
-          confirmButtonColor: '#046B46'
-        }).then(() => {
-          Swal.fire({
-            title: 'Aviso',
-            text: 'Os dados foram atualizados. É necessário autenticar novamente.',
-            icon: 'warning',
-            confirmButtonColor: '#046B46'
-          }).then(() => {
-            window.location.href = '/login';
-          });
-        });
+          confirmButtonColor: '#046B46',
+        }).then(() => this.session.logout());
       },
-      error: (error) => {
-        console.error('Erro ao atualizar os dados do usuário:', error);
-        Swal.fire({
-          title: 'Erro',
-          text: 'Não foi possível atualizar os dados do usuário.',
-          icon: 'error',
-          confirmButtonColor: '#046B46'
-        });
-      }
+      error: (error) => this.showError('Não foi possível atualizar os dados do usuário.', error),
     });
   }
-  
+
+  /** Apenas campos preenchidos e diferentes dos atuais são enviados. */
+  private pendingChanges(): UpdateUserRequest {
+    const name = this.form.name.trim();
+    const email = this.form.email.trim();
+    const changes: UpdateUserRequest = {};
+    if (name && name !== this.currentName) {
+      changes.name = name;
+    }
+    if (email && email !== this.currentEmail) {
+      changes.email = email;
+    }
+    if (this.form.password) {
+      changes.password = this.form.password;
+    }
+    return changes;
+  }
+
+  private showError(fallback: string, error: unknown): void {
+    Swal.fire({
+      title: 'Erro',
+      text: describeError(error, fallback),
+      icon: 'error',
+      confirmButtonColor: '#046B46',
+    });
+  }
+
   redirectToHome(): void {
     this.router.navigate(['/home']);
   }
@@ -159,20 +103,11 @@ export class ConfigComponent implements OnInit {
       confirmButtonColor: '#046B46',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Certeza',
-      cancelButtonText: 'Cancelar'
+      cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location.href = '/login'; 
+        this.session.logout();
       }
     });
-  }
-
-  getUsernameFromLocalStorage(): void {
-    const storedUsername = sessionStorage.getItem('username');
-    if (storedUsername) {
-      const parts = storedUsername.split(' ');
-      const firstName = parts[0];
-      this.username = firstName;
-    }
   }
 }

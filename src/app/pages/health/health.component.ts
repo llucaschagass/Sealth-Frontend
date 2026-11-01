@@ -1,15 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { SessionService } from '../../core/session.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { HealthService } from '../../services/health.service';
 import { HealthDefaultsResponse } from '../../../types/health-response.type';
+import { ApiError } from '../../../types/api-error.type';
 
 @Component({
   selector: 'app-health',
+  standalone: true,
   templateUrl: './health.component.html',
   styleUrls: ['./health.component.scss']
 })
 export class HealthComponent implements OnInit {
+  private readonly session = inject(SessionService);
   userPeso: number = 0; 
   userAltura: number = 0; 
   userIdade: number = 0; 
@@ -29,27 +33,23 @@ export class HealthComponent implements OnInit {
   }
 
   getHealthDefaults(): void {
-    const healthDefaultsString = localStorage.getItem('healthDefaults');
-
-    if (healthDefaultsString) {
-      const healthDefaults: HealthDefaultsResponse = JSON.parse(healthDefaultsString);
-      this.userPeso = healthDefaults.weight;
-      this.userAltura = healthDefaults.height;
-      this.userIdade = healthDefaults.age;
-      this.userSexo = healthDefaults.sex;
-      this.updateCalculations();
-    } else {
-      this.healthService.getHealthDefaults().subscribe({
-        next: (defaults: HealthDefaultsResponse) => {
-          this.userPeso = defaults.weight;
-          this.userAltura = defaults.height;
-          this.userIdade = defaults.age;
-          this.userSexo = defaults.sex;
-          this.updateCalculations();
-        },
-        error: (error: any) => console.log(error),
-      })
-    }
+    this.healthService.getHealthDefaults().subscribe({
+      next: (defaults: HealthDefaultsResponse) => {
+        this.userPeso = defaults.weight;
+        this.userAltura = defaults.height;
+        this.userIdade = defaults.age;
+        this.userSexo = defaults.sex;
+        this.updateCalculations();
+      },
+      error: (error: ApiError) => {
+        Swal.fire({
+          title: 'Erro',
+          text: error.message,
+          icon: 'error',
+          confirmButtonColor: '#046B46',
+        });
+      },
+    });
   }
 
   updateCalculations(): void {
@@ -115,12 +115,7 @@ export class HealthComponent implements OnInit {
   username: string = '';
 
   getUsernameFromLocalStorage(): void {
-    const storedUsername = sessionStorage.getItem('username');
-    if (storedUsername) {
-      const parts = storedUsername.split(' ');
-      const firstName = parts[0];
-      this.username = firstName;
-    }
+    this.username = this.session.firstName;
   }
 
   redirectToHome(): void {
@@ -139,7 +134,7 @@ export class HealthComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location.href = '/login'; 
+        this.session.logout();
       }
     });
   }

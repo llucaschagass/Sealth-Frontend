@@ -1,36 +1,15 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 import { HealthDefaultsResponse } from '../../types/health-response.type';
-import { throwError } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class HealthService {
-  private readonly apiUrl: string = "http://localhost:8080/health";
-
-  constructor(private httpClient: HttpClient) { }
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = `${environment.apiUrl}/health`;
 
   getHealthDefaults(): Observable<HealthDefaultsResponse> {
-    const token = sessionStorage.getItem('auth-token'); 
-
-    if (token) {
-      const headers = new HttpHeaders({
-        'Authorization': `Bearer ${token}`
-      });
-
-      return this.httpClient.get<HealthDefaultsResponse>(`${this.apiUrl}/defaults`, { headers }).pipe(
-        tap((response) => {
-          localStorage.setItem('healthDefaults', JSON.stringify(response));
-        }),
-        catchError((error) => {
-          return throwError(() => new Error(error.message || 'Server error'));
-        })
-      );
-    } else {
-      return throwError(() => new Error('Token not found in session storage'));
-    }
+    return this.http.get<HealthDefaultsResponse>(`${this.apiUrl}/defaults`);
   }
 }

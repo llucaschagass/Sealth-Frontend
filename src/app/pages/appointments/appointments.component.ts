@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { SessionService } from '../../core/session.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
@@ -14,6 +15,7 @@ import { AppointmentsService } from '../../services/appointments.service';
   styleUrls: ['./appointments.component.scss']
 })
 export class AppointmentsComponent implements OnInit {
+  private readonly session = inject(SessionService);
   username: string = '';
   appointments: any[] = [];
   selectedAppointment: any = null;
@@ -36,7 +38,7 @@ export class AppointmentsComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location.href = '/login'; 
+        this.session.logout();
       }
     });
   }
@@ -47,12 +49,7 @@ export class AppointmentsComponent implements OnInit {
   }
 
   getUsernameFromLocalStorage(): void {
-    const storedUsername = sessionStorage.getItem('username');
-    if (storedUsername) {
-      const parts = storedUsername.split(' ');
-      const firstName = parts[0];
-      this.username = firstName;
-    }
+    this.username = this.session.firstName;
   }
 
   getAllAppointments(): void {
@@ -136,8 +133,8 @@ export class AppointmentsComponent implements OnInit {
           <input id="doctor" class="swal2-input" placeholder="Médico" value="${this.selectedAppointment.doctor}">
           <input id="specialty" class="swal2-input" placeholder="Especialidade" value="${this.selectedAppointment.specialty}">
           <input id="date" class="swal2-input" placeholder="Data" value="${this.selectedAppointment.date}">
-          <input id="location" class="swal2-input" placeholder="Local" value="${this.selectedAppointment.location}">
-          <input id="extraInfo" class="swal2-input" placeholder="Informações Extras" value="${this.selectedAppointment.extraInfo}">
+          <input id="location" class="swal2-input" placeholder="Local" value="${this.selectedAppointment.location ?? ''}">
+          <input id="extraInfo" class="swal2-input" placeholder="Informações Extras" value="${this.selectedAppointment.extraInfo ?? ''}">
         `,
         showCancelButton: true,
         confirmButtonColor: '#046B46',
@@ -162,7 +159,7 @@ export class AppointmentsComponent implements OnInit {
             specialty,
             date: formattedDate,
             location,
-            extraInformation: extraInfo
+            extraInfo
           };
   
           return this.appointmentsService.updateAppointment(this.selectedAppointment.id, updatedData).toPromise();

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { describeError } from '../../core/api-error';
 import { DefaultLoginLayoutComponent } from '../../components/default-login-layout/default-login-layout.component';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PrimaryInputComponent } from '../../components/primary-input/primary-input.component';
@@ -71,10 +72,10 @@ export class SignupComponent {
             this.router.navigate(['/login']);
           });
         },
-        error: () => {
+        error: (error) => {
           Swal.fire({
               title: 'Erro!',
-              text: 'Erro inesperado! Tente novamente mais tarde.',
+              text: describeError(error),
               icon: 'error',
               confirmButtonColor: '#046B46',
               confirmButtonText: 'OK'

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { SessionService } from '../../core/session.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
@@ -10,6 +11,7 @@ import Swal from 'sweetalert2';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit {
+  private readonly session = inject(SessionService);
 
   username: string = '';
   
@@ -50,18 +52,13 @@ export class HomeComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location.href = '/login'; 
+        this.session.logout();
       }
     });
   }
 
     
   getUsernameFromLocalStorage(): void {
-    const storedUsername = sessionStorage.getItem('username');
-    if (storedUsername) {
-      const parts = storedUsername.split(' ');
-      const firstName = parts[0];
-      this.username = firstName;
-    }
+    this.username = this.session.firstName;
   }
 }

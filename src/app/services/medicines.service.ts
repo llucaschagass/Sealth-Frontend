@@ -1,34 +1,14 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { catchError, tap } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class MedicinesService {
-  private readonly apiUrl: string = "http://localhost:8080/medicines/pdf";
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = `${environment.apiUrl}/medicines`;
 
-  constructor(private httpClient: HttpClient) { }
-
-  getMedicinesPDFs() {
-    const token = sessionStorage.getItem('auth-token');
-
-    if (token) {
-      const headers = new HttpHeaders({
-        'Authorization': `Bearer ${token}`
-      });
-
-      return this.httpClient.get<string[]>(this.apiUrl, { headers }).pipe(
-        tap((response) => {
-          localStorage.setItem('medicinesPDFs', JSON.stringify(response));
-        }),
-        catchError((error) => {
-          return throwError(() => new Error(error.message || 'Server error'));
-        })
-      );
-    } else {
-      return throwError(() => new Error('Token not found in session storage'));
-    }
+  getMedicinesPDFs(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/pdf`);
   }
 }
