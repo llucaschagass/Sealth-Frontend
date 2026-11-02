@@ -1,4 +1,11 @@
-import { ValidatorFn } from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+
+export const MIN_PASSWORD_LENGTH = 6;
+
+/** Confirmação de senha: precisa ser igual ao campo `password` do mesmo formulário. */
+export function matchesPassword(confirm: AbstractControl): ValidationErrors | null {
+  return confirm.value === confirm.parent?.get('password')?.value ? null : { mismatch: true };
+}
 
 /** Valida um número (aceita vírgula decimal) dentro de um intervalo. Vazio é tratado por `required`. */
 export function numberBetween(min: number, max: number): ValidatorFn {

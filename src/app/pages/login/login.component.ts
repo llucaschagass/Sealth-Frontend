@@ -12,6 +12,12 @@ import { ApiError } from '../../../types/api-error.type';
   selector: 'app-login',
   imports: [ReactiveFormsModule, RouterLink, AuthLayoutComponent, TextFieldComponent],
   templateUrl: './login.component.html',
+  styles: `
+    .forgot {
+      align-self: flex-end;
+      font-size: var(--font-size-sm);
+    }
+  `,
 })
 export class LoginComponent implements OnInit {
   private readonly router = inject(Router);

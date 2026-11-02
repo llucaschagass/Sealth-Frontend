@@ -60,4 +60,29 @@ describe('LoginService', () => {
 
     expect(session.start).not.toHaveBeenCalled();
   });
+
+  it('forgotPassword: POST /auth/forgot-password sem iniciar sessão', () => {
+    let result: unknown;
+
+    service.forgotPassword('maria@x.com').subscribe((value) => (result = value));
+
+    const req = http.expectOne(`${environment.apiUrl}/auth/forgot-password`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ email: 'maria@x.com' });
+    req.flush({ message: 'ok' });
+
+    expect(result).toEqual({ message: 'ok' });
+    expect(session.start).not.toHaveBeenCalled();
+  });
+
+  it('resetPassword: POST /auth/reset-password com token e nova senha, sem iniciar sessão', () => {
+    service.resetPassword('tok', 'nova-senha').subscribe();
+
+    const req = http.expectOne(`${environment.apiUrl}/auth/reset-password`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ token: 'tok', password: 'nova-senha' });
+    req.flush({ message: 'ok' });
+
+    expect(session.start).not.toHaveBeenCalled();
+  });
 });

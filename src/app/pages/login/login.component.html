@@ -21,6 +21,8 @@
       autocomplete="current-password"
     />
 
+    <a class="forgot" routerLink="/forgot-password">Esqueci minha senha</a>
+
     <button type="submit" class="btn btn--primary btn--block" [disabled]="loading">
       {{ loading ? 'Entrando...' : 'Entrar' }}
     </button>

@@ -1,5 +1,5 @@
-import { FormControl } from '@angular/forms';
-import { numberBetween } from './validators';
+import { FormControl, FormGroup } from '@angular/forms';
+import { matchesPassword, numberBetween } from './validators';
 
 describe('numberBetween', () => {
   const validate = (value: unknown) => numberBetween(20, 400)(new FormControl(value));
@@ -27,5 +27,24 @@ describe('numberBetween', () => {
     expect(validate('')).toBeNull();
     expect(validate('   ')).toBeNull();
     expect(validate(null)).toBeNull();
+  });
+});
+
+describe('matchesPassword', () => {
+  const build = (password: string, confirm: string) => {
+    const group = new FormGroup({
+      password: new FormControl(password),
+      passwordConfirm: new FormControl(confirm, matchesPassword),
+    });
+    group.controls.passwordConfirm.updateValueAndValidity(); // agora o campo já tem o formulário pai
+    return group;
+  };
+
+  it('aceita quando a confirmação é igual à senha', () => {
+    expect(build('abc123', 'abc123').controls.passwordConfirm.errors).toBeNull();
+  });
+
+  it('rejeita quando é diferente', () => {
+    expect(build('abc123', 'abc124').controls.passwordConfirm.errors).toEqual({ mismatch: true });
   });
 });

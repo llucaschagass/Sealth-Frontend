@@ -1,23 +1,12 @@
 import { Component, inject } from '@angular/core';
-import {
-  AbstractControl,
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthLayoutComponent } from '../../components/auth-layout/auth-layout.component';
 import { TextFieldComponent } from '../../components/text-field/text-field.component';
 import { applyServerErrors } from '../../core/form-errors';
+import { MIN_PASSWORD_LENGTH, matchesPassword } from '../../core/validators';
 import { LoginService } from '../../services/login.service';
 import { ApiError } from '../../../types/api-error.type';
-
-const MIN_PASSWORD_LENGTH = 6;
-
-function matchesPassword(confirm: AbstractControl): ValidationErrors | null {
-  return confirm.value === confirm.parent?.get('password')?.value ? null : { mismatch: true };
-}
 
 @Component({
   selector: 'app-signup',

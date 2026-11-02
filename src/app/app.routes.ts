@@ -18,6 +18,22 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/signup/signup.component').then((m) => m.SignupComponent),
   },
   {
+    path: 'forgot-password',
+    title: 'Esqueci minha senha | Sealth',
+    loadComponent: () =>
+      import('./pages/forgot-password/forgot-password.component').then(
+        (m) => m.ForgotPasswordComponent,
+      ),
+  },
+  {
+    path: 'reset-password',
+    title: 'Nova senha | Sealth',
+    loadComponent: () =>
+      import('./pages/reset-password/reset-password.component').then(
+        (m) => m.ResetPasswordComponent,
+      ),
+  },
+  {
     path: 'home',
     title: 'Início | Sealth',
     canActivate: [authGuard],

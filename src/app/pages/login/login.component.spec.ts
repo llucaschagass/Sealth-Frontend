@@ -59,4 +59,10 @@ describe('LoginComponent', () => {
       'E-mail ou senha inválidos',
     );
   });
+
+  it('oferece um link para recuperar a senha', () => {
+    const link = fixture.nativeElement.querySelector('a.forgot') as HTMLAnchorElement;
+
+    expect(link.getAttribute('href')).toBe('/forgot-password');
+  });
 });

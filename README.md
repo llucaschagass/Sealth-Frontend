@@ -5,17 +5,18 @@ Consome a API em [`../Sealth-Backend`](../Sealth-Backend).
 
 ## Funcionalidades
 
-| Página                  | Rota                | Acesso  | O que faz                                                       |
-| ----------------------- | ------------------- | ------- | --------------------------------------------------------------- |
-| Landing                 | `/`                 | público | Apresentação, serviços, sobre e contato                         |
-| Entrar / Criar conta    | `/login`, `/signup` | público | Autenticação com validação e erros por campo                    |
-| Início                  | `/home`             | logado  | Atalhos para as seções                                          |
-| Minhas consultas        | `/appointment`      | logado  | Criar, editar e cancelar consultas, com horário e lembrete      |
-| Meus medicamentos       | `/medicines`        | logado  | Medicamentos em uso (dosagem e horários) e bulas em PDF         |
-| Minhas vacinas          | `/vaccines`         | logado  | Calendário de vacinação, doses registradas e alertas            |
-| Informações importantes | `/info`             | logado  | Artigos de saúde                                                |
-| Minha saúde             | `/health`           | logado  | Calculadora (IMC, água, calorias, peso ideal) e histórico salvo |
-| Configurações           | `/config`           | logado  | Alterar nome, e-mail e senha                                    |
+| Página                  | Rota                                  | Acesso  | O que faz                                                        |
+| ----------------------- | ------------------------------------- | ------- | ---------------------------------------------------------------- |
+| Landing                 | `/`                                   | público | Apresentação, serviços, sobre e contato                          |
+| Entrar / Criar conta    | `/login`, `/signup`                   | público | Autenticação com validação e erros por campo                     |
+| Recuperar senha         | `/forgot-password`, `/reset-password` | público | Pede o link por e-mail e define a nova senha (link de uso único) |
+| Início                  | `/home`                               | logado  | Atalhos para as seções                                           |
+| Minhas consultas        | `/appointment`                        | logado  | Criar, editar e cancelar consultas, com horário e lembrete       |
+| Meus medicamentos       | `/medicines`                          | logado  | Medicamentos em uso (dosagem e horários) e bulas em PDF          |
+| Minhas vacinas          | `/vaccines`                           | logado  | Calendário de vacinação, doses registradas e alertas             |
+| Informações importantes | `/info`                               | logado  | Artigos de saúde                                                 |
+| Minha saúde             | `/health`                             | logado  | Calculadora (IMC, água, calorias, peso ideal) e histórico salvo  |
+| Configurações           | `/config`                             | logado  | Alterar nome, e-mail e senha                                     |
 
 ## Como rodar
 
@@ -93,4 +94,4 @@ e ícones e marca são SVG.
   desenvolvimento (build/teste) e não vão para o bundle.
 - Todos os componentes usam `OnPush` (padrão do Angular 22). A exceção é o `TextFieldComponent`, que lê o estado do
   `NgControl` (não reativo) e por isso usa `Eager`.
-- Recuperação de senha ainda não existe (depende de endpoint no backend).
+- O e-mail de recuperação de senha ainda não é enviado de verdade: em desenvolvimento o backend escreve o link no log (veja o README do backend).
