@@ -10,13 +10,13 @@ export interface HomeSection {
 export const HOME_SECTIONS: readonly HomeSection[] = [
   {
     title: 'Minhas consultas',
-    description: 'Registre, consulte e organize seus atendimentos médicos.',
+    description: 'Registre consultas com horário e lembrete e organize seus atendimentos.',
     path: '/appointment',
     icon: 'calendar',
   },
   {
     title: 'Meus medicamentos',
-    description: 'Acesse as bulas em PDF dos medicamentos disponíveis.',
+    description: 'Registre dosagem e horários e consulte as bulas em PDF.',
     path: '/medicines',
     icon: 'pill',
   },

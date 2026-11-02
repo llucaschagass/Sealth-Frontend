@@ -134,9 +134,11 @@
   --tone: var(--color-primary);
   --tone-soft: var(--color-primary-soft);
 
-  display: flex;
+  // celular: ícone | texto, com a etiqueta sob o texto; a partir de sm, etiqueta à direita
+  display: grid;
+  grid-template-columns: auto 1fr;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-1) var(--space-4);
   height: 100%;
   padding: var(--space-3) var(--space-4);
   background: var(--color-surface);
@@ -147,6 +149,10 @@
   color: var(--color-text);
   text-decoration: none;
   transition: border-color var(--transition);
+
+  @include up(sm) {
+    grid-template-columns: auto 1fr auto;
+  }
 
   &:hover {
     border-color: var(--tone);
@@ -164,7 +170,7 @@
 
   &__icon {
     display: grid;
-    flex-shrink: 0;
+    grid-row: span 2;
     place-items: center;
     width: 2.5rem;
     height: 2.5rem;
@@ -172,11 +178,14 @@
     border-radius: var(--radius-md);
     color: var(--tone);
     --icon-size: 1.25rem;
+
+    @include up(sm) {
+      grid-row: auto;
+    }
   }
 
   &__text {
     display: flex;
-    flex: 1;
     flex-direction: column;
     min-width: 0;
   }
@@ -191,7 +200,8 @@
   }
 
   &__badge {
-    flex-shrink: 0;
+    grid-column: 2;
+    justify-self: start;
     padding: 0 var(--space-3);
     background: var(--tone-soft);
     border-radius: var(--radius-pill);
@@ -199,5 +209,10 @@
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-medium);
     white-space: nowrap;
+
+    @include up(sm) {
+      grid-column: auto;
+      justify-self: end;
+    }
   }
 }

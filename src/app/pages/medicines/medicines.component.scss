@@ -58,8 +58,13 @@ h2 {
     justify-content: space-between;
     gap: var(--space-3);
 
+    // sem opacity: ela reduziria o contraste do texto abaixo do mínimo
     &--ended {
-      opacity: 0.75;
+      background: var(--color-bg);
+    }
+
+    &--ended .mine__name {
+      color: var(--color-text-muted);
     }
   }
 

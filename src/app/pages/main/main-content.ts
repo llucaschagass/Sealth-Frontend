@@ -10,7 +10,7 @@ export const SERVICES: readonly Service[] = [
   {
     icon: 'calendar',
     title: 'Minhas consultas',
-    description: 'Agende, visualize e gerencie suas consultas médicas de forma conveniente.',
+    description: 'Registre, visualize e gerencie suas consultas médicas, com horário e lembrete.',
   },
   {
     icon: 'pill',
@@ -22,7 +22,7 @@ export const SERVICES: readonly Service[] = [
     icon: 'bell',
     title: 'Avisos importantes',
     description:
-      'Mantenha-se informado com alertas sobre campanhas de vacinação, surtos de doenças e outras orientações de saúde.',
+      'Acompanhe seu calendário de vacinação e receba avisos de reforços vencidos, vacinas pendentes e lembretes de consultas, tudo em um quadro de avisos.',
   },
   {
     icon: 'heart-pulse',
