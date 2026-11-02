@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ModalComponent } from './modal.component';
 
 @Component({
-  standalone: true,
   imports: [ModalComponent],
   template: `<app-modal heading="Título de teste" (closed)="closedCount = closedCount + 1">
     <button type="button">Dentro</button>

@@ -7,7 +7,6 @@ import { HOME_SECTIONS } from './home-sections';
 
 @Component({
   selector: 'app-home',
-  standalone: true,
   imports: [RouterLink, AppShellComponent, IconComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',

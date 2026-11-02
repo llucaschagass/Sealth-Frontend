@@ -7,7 +7,6 @@ import { medicinePdfUrl } from './medicine-pdf';
 
 @Component({
   selector: 'app-medicines',
-  standalone: true,
   imports: [AppShellComponent, IconComponent],
   templateUrl: './medicines.component.html',
   styleUrl: './medicines.component.scss',

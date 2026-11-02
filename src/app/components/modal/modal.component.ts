@@ -5,7 +5,6 @@ let nextId = 0;
 /** Diálogo modal sobre o <dialog> nativo: foco preso, Esc fecha e clique fora fecha. */
 @Component({
   selector: 'app-modal',
-  standalone: true,
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.scss',
 })

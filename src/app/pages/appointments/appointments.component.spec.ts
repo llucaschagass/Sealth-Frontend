@@ -96,6 +96,34 @@ describe('AppointmentsComponent', () => {
     expect(cards().length).toBe(1);
   });
 
+  describe('integração com os cartões', () => {
+    const cardButton = (index: number): HTMLButtonElement =>
+      cards()[0].querySelectorAll<HTMLButtonElement>('.appointment__actions button')[index];
+
+    it('clicar em Editar no cartão abre o formulário com os dados da consulta', () => {
+      const existing = appointment(1, daysFromNow(3), 'Dr. Clique');
+      create([existing]);
+
+      cardButton(0).click();
+      fixture.detectChanges();
+
+      expect(component.editing()).toEqual(existing);
+      expect(element().querySelectorAll('dialog[open]').length).toBe(1);
+      expect(component.form.controls.doctor.value).toBe('Dr. Clique');
+    });
+
+    it('clicar em Cancelar no cartão abre a confirmação para aquela consulta', () => {
+      const existing = appointment(1, daysFromNow(3), 'Dr. Clique');
+      create([existing]);
+
+      cardButton(1).click();
+      fixture.detectChanges();
+
+      expect(component.toCancel()).toEqual(existing);
+      expect(element().querySelector('dialog[open]')?.textContent).toContain('Dr. Clique');
+    });
+  });
+
   describe('criar', () => {
     it('não envia formulário inválido', () => {
       create([]);

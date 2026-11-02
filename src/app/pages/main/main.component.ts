@@ -6,7 +6,6 @@ import { ABOUT_TEXT, CONTACT, SERVICES } from './main-content';
 
 @Component({
   selector: 'app-main',
-  standalone: true,
   imports: [RouterLink, LogoComponent, IconComponent],
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',

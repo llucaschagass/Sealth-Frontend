@@ -12,7 +12,6 @@ const MIN_PASSWORD_LENGTH = 6;
 
 @Component({
   selector: 'app-config',
-  standalone: true,
   imports: [ReactiveFormsModule, AppShellComponent, TextFieldComponent],
   templateUrl: './config.component.html',
   styleUrl: './config.component.scss',

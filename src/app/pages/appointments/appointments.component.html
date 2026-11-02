@@ -30,8 +30,8 @@
             <li>
               <app-appointment-card
                 [appointment]="appointment"
-                (edit)="openEdit($event)"
-                (cancel)="askCancel($event)"
+                (editRequest)="openEdit($event)"
+                (cancelRequest)="askCancel($event)"
               />
             </li>
           }
@@ -48,8 +48,8 @@
               <app-appointment-card
                 [appointment]="appointment"
                 [past]="true"
-                (edit)="openEdit($event)"
-                (cancel)="askCancel($event)"
+                (editRequest)="openEdit($event)"
+                (cancelRequest)="askCancel($event)"
               />
             </li>
           }

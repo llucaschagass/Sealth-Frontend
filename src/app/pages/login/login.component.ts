@@ -10,7 +10,6 @@ import { ApiError } from '../../../types/api-error.type';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
   imports: [ReactiveFormsModule, RouterLink, AuthLayoutComponent, TextFieldComponent],
   templateUrl: './login.component.html',
 })

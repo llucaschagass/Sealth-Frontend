@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { ControlValueAccessor, NgControl, ValidationErrors } from '@angular/forms';
 
 type FieldType = 'text' | 'email' | 'password' | 'date' | 'number';
@@ -22,9 +22,11 @@ const ERROR_MESSAGES: Record<string, (error: unknown) => string> = {
 /** Campo de texto acessível: label associada, erro anunciado e botão de mostrar senha. */
 @Component({
   selector: 'app-text-field',
-  standalone: true,
   templateUrl: './text-field.component.html',
   styleUrl: './text-field.component.scss',
+  // Lê o estado do NgControl (touched/dirty/errors), que não são signals: precisa de checagem Eager.
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class TextFieldComponent implements ControlValueAccessor {
   @Input({ required: true }) label!: string;

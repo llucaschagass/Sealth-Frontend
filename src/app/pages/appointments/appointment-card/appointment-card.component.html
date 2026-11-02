@@ -21,7 +21,7 @@
       type="button"
       class="btn btn--ghost"
       [attr.aria-label]="'Editar ' + description"
-      (click)="edit.emit(appointment)"
+      (click)="editRequest.emit(appointment)"
     >
       Editar
     </button>
@@ -29,7 +29,7 @@
       type="button"
       class="btn btn--ghost appointment__cancel"
       [attr.aria-label]="'Cancelar ' + description"
-      (click)="cancel.emit(appointment)"
+      (click)="cancelRequest.emit(appointment)"
     >
       Cancelar
     </button>

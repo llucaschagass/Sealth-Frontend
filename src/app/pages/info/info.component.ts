@@ -6,7 +6,6 @@ import { INFO_ARTICLES } from './info-articles';
 
 @Component({
   selector: 'app-info',
-  standalone: true,
   imports: [NgOptimizedImage, AppShellComponent, IconComponent],
   templateUrl: './info.component.html',
   styleUrl: './info.component.scss',

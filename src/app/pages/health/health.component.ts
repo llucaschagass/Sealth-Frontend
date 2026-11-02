@@ -17,7 +17,6 @@ import {
 
 @Component({
   selector: 'app-health',
-  standalone: true,
   imports: [ReactiveFormsModule, AppShellComponent, TextFieldComponent],
   templateUrl: './health.component.html',
   styleUrl: './health.component.scss',

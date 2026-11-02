@@ -1,3 +1,5 @@
+@use 'sass:map';
+
 // Breakpoints mobile-first: use "up(md)" para estilos a partir de tablet.
 $breakpoints: (
   sm: 40rem,
@@ -6,7 +8,7 @@ $breakpoints: (
 );
 
 @mixin up($name) {
-  @media (min-width: map-get($breakpoints, $name)) {
+  @media (min-width: map.get($breakpoints, $name)) {
     @content;
   }
 }

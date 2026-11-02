@@ -21,7 +21,6 @@ interface AppointmentFormValue {
 
 @Component({
   selector: 'app-appointments',
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     AppShellComponent,

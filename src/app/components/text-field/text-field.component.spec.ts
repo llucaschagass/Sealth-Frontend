@@ -1,11 +1,13 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { TextFieldComponent } from './text-field.component';
 
 @Component({
-  standalone: true,
+  // O host de teste muta propriedades planas; precisa de checagem Eager.
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ReactiveFormsModule, TextFieldComponent],
   template: `<app-text-field [formControl]="control" [type]="type" label="E-mail" />`,
 })

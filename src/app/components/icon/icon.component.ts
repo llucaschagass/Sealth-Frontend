@@ -17,7 +17,6 @@ export type IconName =
 /** Ícones de traço (24x24, estilo Lucide) que herdam a cor do texto e são decorativos. */
 @Component({
   selector: 'app-icon',
-  standalone: true,
   templateUrl: './icon.component.html',
   styles: `
     :host {

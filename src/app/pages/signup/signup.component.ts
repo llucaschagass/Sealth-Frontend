@@ -21,7 +21,6 @@ function matchesPassword(confirm: AbstractControl): ValidationErrors | null {
 
 @Component({
   selector: 'app-signup',
-  standalone: true,
   imports: [ReactiveFormsModule, RouterLink, AuthLayoutComponent, TextFieldComponent],
   templateUrl: './signup.component.html',
 })
