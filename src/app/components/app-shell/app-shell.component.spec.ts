@@ -10,7 +10,7 @@ describe('AppShellComponent', () => {
   const dialog = (): HTMLDialogElement => fixture.nativeElement.querySelector('dialog');
   const button = (text: string): HTMLButtonElement =>
     Array.from<HTMLButtonElement>(fixture.nativeElement.querySelectorAll('button')).find(
-      (b) => b.textContent?.trim() === text,
+      (b) => (b.getAttribute('aria-label') ?? b.textContent?.trim()) === text,
     )!;
 
   beforeEach(() => {

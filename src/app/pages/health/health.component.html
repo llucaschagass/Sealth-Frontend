@@ -1,7 +1,7 @@
 <app-shell title="Minha saúde">
   <p class="intro">
-    Ajuste seus dados para ver estimativas de IMC, hidratação e gasto calórico. Os valores iniciais
-    são exemplos; eles ainda não ficam salvos na sua conta.
+    Informe seus dados para ver estimativas de IMC, hidratação e gasto calórico. Salve uma medição
+    para acompanhar sua evolução ao longo do tempo.
   </p>
 
   @if (loadError()) {
@@ -9,7 +9,7 @@
   }
 
   <div class="layout">
-    <form class="card" [formGroup]="form" novalidate>
+    <form class="card" [formGroup]="form" (ngSubmit)="save()" novalidate>
       <h2>Seus dados</h2>
       <div class="form-stack">
         <app-text-field
@@ -27,6 +27,35 @@
           <label><input type="radio" formControlName="sex" value="masculino" /> Masculino</label>
           <label><input type="radio" formControlName="sex" value="feminino" /> Feminino</label>
         </fieldset>
+
+        <fieldset class="pressure">
+          <legend>Pressão arterial (opcional)</legend>
+          <app-text-field
+            formControlName="systolic"
+            type="number"
+            label="Sistólica"
+            suffix="mmHg"
+          />
+          <app-text-field
+            formControlName="diastolic"
+            type="number"
+            label="Diastólica"
+            suffix="mmHg"
+          />
+          @if (form.errors?.['bloodPressure'] && form.touched) {
+            <p class="field-error" role="alert">{{ form.errors?.['bloodPressure'] }}</p>
+          }
+        </fieldset>
+
+        @if (saveError()) {
+          <p class="alert alert--danger" role="alert">{{ saveError() }}</p>
+        }
+        @if (saved()) {
+          <p class="alert alert--success" role="status">Medição salva.</p>
+        }
+        <button class="btn btn--primary" type="submit" [disabled]="saving()">
+          {{ saving() ? 'Salvando...' : 'Salvar medição' }}
+        </button>
       </div>
     </form>
 
@@ -80,4 +109,39 @@
       </p>
     </section>
   </div>
+
+  <section class="history" aria-labelledby="history-title">
+    <h2 id="history-title">Histórico de medições</h2>
+    @if (historyError()) {
+      <p class="alert alert--danger" role="alert">{{ historyError() }}</p>
+    }
+    @if (history().length === 0) {
+      <p class="card empty">Você ainda não salvou nenhuma medição.</p>
+    } @else {
+      <ul class="history__list">
+        @for (item of history(); track item.id) {
+          <li class="card history__item">
+            <div>
+              <strong>{{ item.date }}</strong>
+              <span class="history__detail">
+                {{ format(item.weightKg) }} kg · {{ format(item.heightCm, 0) }} cm · IMC
+                {{ format(item.bmi) }}
+                @if (item.systolic !== null && item.diastolic !== null) {
+                  · {{ item.systolic }}/{{ item.diastolic }} mmHg
+                }
+              </span>
+            </div>
+            <button
+              class="btn btn--secondary"
+              type="button"
+              (click)="remove(item.id)"
+              [attr.aria-label]="'Excluir medição de ' + item.date"
+            >
+              Excluir
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </section>
 </app-shell>

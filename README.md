@@ -1,20 +1,20 @@
 # Sealth: Frontend
 
-Aplicação web do Sealth, construída com **Angular 17** (componentes standalone, signals e novo control flow).
+Aplicação web do Sealth, construída com **Angular 22** (componentes standalone, signals e novo control flow).
 Consome a API em [`../Sealth-Backend`](../Sealth-Backend).
 
 ## Funcionalidades
 
-| Página                  | Rota                | Acesso  | O que faz                                                        |
-| ----------------------- | ------------------- | ------- | ---------------------------------------------------------------- |
-| Landing                 | `/`                 | público | Apresentação, serviços, sobre e contato                          |
-| Entrar / Criar conta    | `/login`, `/signup` | público | Autenticação com validação e erros por campo                     |
-| Início                  | `/home`             | logado  | Atalhos para as seções                                           |
-| Minhas consultas        | `/appointment`      | logado  | Criar, editar e cancelar consultas (próximas e anteriores)       |
-| Meus medicamentos       | `/medicines`        | logado  | Bulas em PDF                                                     |
-| Informações importantes | `/info`             | logado  | Artigos de saúde                                                 |
-| Minha saúde             | `/health`           | logado  | Calculadora de IMC, hidratação, calorias em repouso e peso ideal |
-| Configurações           | `/config`           | logado  | Alterar nome, e-mail e senha                                     |
+| Página                  | Rota                | Acesso  | O que faz                                                       |
+| ----------------------- | ------------------- | ------- | --------------------------------------------------------------- |
+| Landing                 | `/`                 | público | Apresentação, serviços, sobre e contato                         |
+| Entrar / Criar conta    | `/login`, `/signup` | público | Autenticação com validação e erros por campo                    |
+| Início                  | `/home`             | logado  | Atalhos para as seções                                          |
+| Minhas consultas        | `/appointment`      | logado  | Criar, editar e cancelar consultas (próximas e anteriores)      |
+| Meus medicamentos       | `/medicines`        | logado  | Bulas em PDF                                                    |
+| Informações importantes | `/info`             | logado  | Artigos de saúde                                                |
+| Minha saúde             | `/health`           | logado  | Calculadora (IMC, água, calorias, peso ideal) e histórico salvo |
+| Configurações           | `/config`           | logado  | Alterar nome, e-mail e senha                                    |
 
 ## Como rodar
 
@@ -88,8 +88,8 @@ e ícones e marca são SVG.
 
 ## Pendências conhecidas
 
-- **Angular 17 está fora de suporte** e o `npm audit` lista avisos de segurança nos pacotes `@angular/*`. O app não usa
-  os recursos afetados (i18n, SSR/hidratação, cache de transferência HTTP, XSRF, `innerHTML`), então o risco prático é
-  baixo, mas a solução é atualizar o framework para uma versão suportada.
-- Os dados da página "Minha saúde" não são salvos por usuário (dependem de um endpoint novo no backend).
+- `npm audit` não aponta vulnerabilidades nas dependências de produção; os avisos restantes são de ferramentas de
+  desenvolvimento (build/teste) e não vão para o bundle.
+- Todos os componentes usam `OnPush` (padrão do Angular 22). A exceção é o `TextFieldComponent`, que lê o estado do
+  `NgControl` (não reativo) e por isso usa `Eager`.
 - Recuperação de senha ainda não existe (depende de endpoint no backend).

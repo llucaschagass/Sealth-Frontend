@@ -8,7 +8,15 @@
     <h1 class="shell__title">{{ title }}</h1>
     <div class="shell__user">
       <span class="shell__greeting">Olá, {{ firstName }}</span>
-      <button type="button" class="btn btn--ghost" (click)="openLogout()">Sair</button>
+      <button
+        type="button"
+        class="shell__logout"
+        aria-label="Sair"
+        title="Sair"
+        (click)="openLogout()"
+      >
+        <app-icon name="log-out" />
+      </button>
     </div>
   </div>
 </header>
