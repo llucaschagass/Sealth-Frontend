@@ -10,7 +10,7 @@ Consome a API em [`../Sealth-Backend`](../Sealth-Backend).
 | Landing                 | `/`                 | público | Apresentação, serviços, sobre e contato                         |
 | Entrar / Criar conta    | `/login`, `/signup` | público | Autenticação com validação e erros por campo                    |
 | Início                  | `/home`             | logado  | Atalhos para as seções                                          |
-| Minhas consultas        | `/appointment`      | logado  | Criar, editar e cancelar consultas (próximas e anteriores)      |
+| Minhas consultas        | `/appointment`      | logado  | Criar, editar e cancelar consultas, com horário e lembrete      |
 | Meus medicamentos       | `/medicines`        | logado  | Medicamentos em uso (dosagem e horários) e bulas em PDF         |
 | Informações importantes | `/info`             | logado  | Artigos de saúde                                                |
 | Minha saúde             | `/health`           | logado  | Calculadora (IMC, água, calorias, peso ideal) e histórico salvo |

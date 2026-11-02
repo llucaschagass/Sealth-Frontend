@@ -9,10 +9,12 @@ describe('AppointmentsService', () => {
   const base = `${environment.apiUrl}/appointments`;
   const request: AppointmentRequest = {
     date: '2026-12-01',
+    time: '14:30',
     doctor: 'Dra. Souza',
     specialty: 'Ortopedia',
     location: null,
     extraInfo: 'Levar exames',
+    reminderMinutes: 60,
   };
   let service: AppointmentsService;
   let http: HttpTestingController;
@@ -33,7 +35,7 @@ describe('AppointmentsService', () => {
     const req = http.expectOne(`${base}/create`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(request);
-    req.flush({ id: 1, ...request });
+    req.flush({ id: 1, ...request, reminderAt: null });
   });
 
   it('lista com GET /all', () => {
@@ -44,6 +46,17 @@ describe('AppointmentsService', () => {
     req.flush([]);
   });
 
+  it('busca os lembretes em vigor com GET /reminders', () => {
+    let result: unknown;
+
+    service.getReminders().subscribe((value) => (result = value));
+
+    const req = http.expectOne(`${base}/reminders`);
+    expect(req.request.method).toBe('GET');
+    req.flush([]);
+    expect(result).toEqual([]);
+  });
+
   it('atualiza com PUT /{id}/update usando extraInfo (não extraInformation)', () => {
     service.updateAppointment(7, request).subscribe();
 
@@ -51,7 +64,7 @@ describe('AppointmentsService', () => {
     expect(req.request.method).toBe('PUT');
     expect(Object.keys(req.request.body)).toContain('extraInfo');
     expect(Object.keys(req.request.body)).not.toContain('extraInformation');
-    req.flush({ id: 7, ...request });
+    req.flush({ id: 7, ...request, reminderAt: null });
   });
 
   it('cancela com DELETE /{id}/cancel', () => {

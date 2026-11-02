@@ -12,7 +12,9 @@ export function groupAppointments(
   appointments: readonly Appointment[],
   now = new Date(),
 ): AppointmentGroups {
-  const byDate = (a: Appointment, b: Appointment) => a.date.localeCompare(b.date);
+  // no mesmo dia, ordena pelo horário (consultas sem horário por último)
+  const byDate = (a: Appointment, b: Appointment) =>
+    a.date.localeCompare(b.date) || (a.time ?? '99:99').localeCompare(b.time ?? '99:99');
   return {
     upcoming: appointments.filter((a) => !isPastIso(a.date, now)).sort(byDate),
     past: appointments.filter((a) => isPastIso(a.date, now)).sort((a, b) => byDate(b, a)),

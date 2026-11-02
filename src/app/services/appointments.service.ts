@@ -17,6 +17,11 @@ export class AppointmentsService {
     return this.http.get<Appointment[]>(`${this.apiUrl}/all`);
   }
 
+  /** Consultas com lembrete em vigor: o aviso já valeu e a consulta ainda não começou. */
+  getReminders(): Observable<Appointment[]> {
+    return this.http.get<Appointment[]>(`${this.apiUrl}/reminders`);
+  }
+
   updateAppointment(id: number, data: AppointmentRequest): Observable<Appointment> {
     return this.http.put<Appointment>(`${this.apiUrl}/${id}/update`, data);
   }

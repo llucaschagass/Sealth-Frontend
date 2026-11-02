@@ -64,10 +64,19 @@
         <p class="alert alert--danger" role="alert">{{ formError() }}</p>
       }
       <app-text-field formControlName="date" type="date" label="Data" />
+      <app-text-field formControlName="time" type="time" label="Horário (opcional)" />
       <app-text-field formControlName="doctor" label="Médico(a)" placeholder="Dra. Souza" />
       <app-text-field formControlName="specialty" label="Especialidade" placeholder="Cardiologia" />
       <app-text-field formControlName="location" label="Local (opcional)" />
       <app-text-field formControlName="extraInfo" label="Observações (opcional)" />
+      <app-select-field
+        formControlName="reminder"
+        label="Lembrete (opcional)"
+        [options]="reminderOptions()"
+      />
+      @if (form.errors?.['reminder'] && form.touched) {
+        <p class="field-error" role="alert">{{ form.errors?.['reminder'] }}</p>
+      }
 
       <div class="modal-actions">
         <button type="button" class="btn btn--secondary" (click)="closeForm()">Cancelar</button>

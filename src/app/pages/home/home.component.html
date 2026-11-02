@@ -13,6 +13,22 @@
     />
   </section>
 
+  @if (reminders().length > 0) {
+    <section class="reminders" aria-labelledby="reminders-title">
+      <h2 id="reminders-title"><app-icon name="bell" /> Lembretes</h2>
+      <ul class="reminders__list">
+        @for (item of reminders(); track item.id) {
+          <li class="reminders__item">
+            <a routerLink="/appointment">
+              Consulta com <strong>{{ item.doctor }}</strong> ({{ item.specialty }}) em
+              {{ longDate(item.date) }} às {{ item.time }}
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
   <nav aria-label="Seções do aplicativo">
     <ul class="sections">
       @for (section of sections; track section.path) {

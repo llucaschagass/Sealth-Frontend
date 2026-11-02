@@ -1,13 +1,16 @@
 import { Appointment } from '../../../types/appointment.type';
 import { dateParts, groupAppointments, longDate } from './appointment-groups';
 
-const make = (id: number, date: string): Appointment => ({
+const make = (id: number, date: string, time: string | null = null): Appointment => ({
   id,
   date,
+  time,
   doctor: `Dr. ${id}`,
   specialty: 'Clínico',
   location: null,
   extraInfo: null,
+  reminderMinutes: null,
+  reminderAt: null,
 });
 
 describe('appointment-groups', () => {
@@ -30,6 +33,15 @@ describe('appointment-groups', () => {
     );
 
     expect(upcoming.map((a) => a.id)).toEqual([2, 3, 1]);
+  });
+
+  it('no mesmo dia ordena pelo horário, deixando as sem horário por último', () => {
+    const { upcoming } = groupAppointments(
+      [make(1, '2026-11-20'), make(2, '2026-11-20', '15:00'), make(3, '2026-11-20', '07:30')],
+      now,
+    );
+
+    expect(upcoming.map((a) => a.id)).toEqual([3, 2, 1]);
   });
 
   it('ordena anteriores da mais recente para a mais antiga', () => {

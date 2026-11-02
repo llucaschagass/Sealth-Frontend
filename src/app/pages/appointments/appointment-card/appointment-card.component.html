@@ -8,8 +8,18 @@
   <div class="appointment__body">
     <h3>{{ appointment.doctor }}</h3>
     <p class="appointment__specialty">{{ appointment.specialty }}</p>
+    @if (appointment.time) {
+      <p class="appointment__meta">
+        <app-icon name="clock" /> <time class="appointment__time">{{ appointment.time }}</time>
+      </p>
+    }
     @if (appointment.location) {
       <p class="appointment__meta"><app-icon name="map-pin" /> {{ appointment.location }}</p>
+    }
+    @if (appointment.time && appointment.reminderMinutes !== null) {
+      <p class="appointment__meta">
+        <app-icon name="bell" /> Lembrete: {{ reminderLabel(appointment.reminderMinutes) }}
+      </p>
     }
     @if (appointment.extraInfo) {
       <p class="appointment__meta">{{ appointment.extraInfo }}</p>

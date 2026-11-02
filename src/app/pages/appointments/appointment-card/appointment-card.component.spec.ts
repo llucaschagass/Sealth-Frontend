@@ -5,10 +5,13 @@ import { AppointmentCardComponent } from './appointment-card.component';
 const appointment: Appointment = {
   id: 1,
   date: '2026-12-01',
+  time: null,
   doctor: 'Dra. Souza',
   specialty: 'Ortopedia',
   location: 'Hospital XYZ',
   extraInfo: 'Dores nas costas',
+  reminderMinutes: null,
+  reminderAt: null,
 };
 
 describe('AppointmentCardComponent', () => {
@@ -34,6 +37,32 @@ describe('AppointmentCardComponent', () => {
     expect(text).toContain('Ortopedia');
     expect(text).toContain('Hospital XYZ');
     expect(text).toContain('Dores nas costas');
+  });
+
+  it('não mostra horário nem lembrete quando não existem', () => {
+    expect(element().querySelector('.appointment__time')).toBeNull();
+    expect(element().textContent).not.toContain('Lembrete');
+  });
+
+  it('mostra o horário e a antecedência do lembrete', () => {
+    fixture.componentRef.setInput('appointment', {
+      ...appointment,
+      time: '14:30',
+      reminderMinutes: 1440,
+      reminderAt: '2026-11-30T14:30:00',
+    });
+    fixture.detectChanges();
+
+    expect(element().querySelector('.appointment__time')?.textContent).toContain('14:30');
+    expect(element().textContent).toContain('Lembrete: 1 dia antes');
+  });
+
+  it('mostra o horário sem lembrete quando só ele foi informado', () => {
+    fixture.componentRef.setInput('appointment', { ...appointment, time: '08:00' });
+    fixture.detectChanges();
+
+    expect(element().querySelector('.appointment__time')?.textContent).toContain('08:00');
+    expect(element().textContent).not.toContain('Lembrete');
   });
 
   it('mostra a data correta em <time>, sem deslocar por fuso', () => {

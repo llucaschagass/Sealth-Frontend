@@ -5,6 +5,7 @@ import { SessionService } from '../../core/session.service';
 import { toIsoDate } from '../../core/dates';
 import { AppointmentsService } from '../../services/appointments.service';
 import { Appointment } from '../../../types/appointment.type';
+import { REMINDER_OPTIONS } from './appointment-reminder';
 import { AppointmentsComponent } from './appointments.component';
 
 const daysFromNow = (days: number): string => {
@@ -16,10 +17,13 @@ const daysFromNow = (days: number): string => {
 const appointment = (id: number, date: string, doctor = `Dr. ${id}`): Appointment => ({
   id,
   date,
+  time: null,
   doctor,
   specialty: 'Cardiologia',
   location: 'Hospital ABC',
   extraInfo: null,
+  reminderMinutes: null,
+  reminderAt: null,
 });
 
 describe('AppointmentsComponent', () => {
@@ -59,10 +63,12 @@ describe('AppointmentsComponent', () => {
   const fillForm = () =>
     component.form.setValue({
       date: daysFromNow(10),
+      time: '',
       doctor: ' Dra. Souza ',
       specialty: 'Ortopedia',
       location: '',
       extraInfo: '  ',
+      reminder: '',
     });
 
   it('separa próximas e anteriores em seções distintas', () => {
@@ -149,8 +155,10 @@ describe('AppointmentsComponent', () => {
         date,
         doctor: 'Dra. Souza',
         specialty: 'Ortopedia',
+        time: null,
         location: null,
         extraInfo: null,
+        reminderMinutes: null,
       });
       expect(component.appointments().map((a) => a.id)).toEqual([9]);
       expect(cards().length).toBe(1);
@@ -186,10 +194,12 @@ describe('AppointmentsComponent', () => {
       expect(component.editing()).toBe(existing);
       expect(component.form.getRawValue()).toEqual({
         date: existing.date,
+        time: '',
         doctor: 'Dr. 1',
         specialty: 'Cardiologia',
         location: 'Hospital ABC',
         extraInfo: '',
+        reminder: '',
       });
     });
 
@@ -209,6 +219,101 @@ describe('AppointmentsComponent', () => {
       );
       expect(component.appointments().map((a) => a.doctor)).toEqual(['Dr. Novo', 'Dr. 2']);
       expect(service.createAppointment).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('horário e lembrete', () => {
+    it('envia o horário e a antecedência do lembrete como número', () => {
+      create([]);
+      component.openCreate();
+      fillForm();
+      component.form.patchValue({ time: '14:30', reminder: '1440' });
+      service.createAppointment.and.returnValue(of(appointment(9, daysFromNow(10))));
+
+      component.save();
+
+      expect(service.createAppointment).toHaveBeenCalledWith(
+        jasmine.objectContaining({ time: '14:30', reminderMinutes: 1440 }),
+      );
+    });
+
+    it('aceita lembrete "na hora" (zero minuto)', () => {
+      create([]);
+      component.openCreate();
+      fillForm();
+      component.form.patchValue({ time: '09:00', reminder: '0' });
+      service.createAppointment.and.returnValue(of(appointment(9, daysFromNow(10))));
+
+      component.save();
+
+      expect(service.createAppointment).toHaveBeenCalledWith(
+        jasmine.objectContaining({ reminderMinutes: 0 }),
+      );
+    });
+
+    it('não envia lembrete sem horário e mostra o motivo', () => {
+      create([]);
+      component.openCreate();
+      fillForm();
+      component.form.patchValue({ reminder: '60' });
+      component.form.markAllAsTouched();
+      fixture.detectChanges();
+
+      component.save();
+
+      expect(service.createAppointment).not.toHaveBeenCalled();
+      expect(component.form.errors?.['reminder']).toContain('horário');
+      expect(element().querySelector('.field-error')).not.toBeNull();
+
+      component.form.patchValue({ time: '10:00' });
+      expect(component.form.errors).toBeNull();
+    });
+
+    it('carrega horário e lembrete ao editar', () => {
+      const existing = {
+        ...appointment(1, daysFromNow(3)),
+        time: '08:15',
+        reminderMinutes: 120,
+        reminderAt: null,
+      };
+      create([existing]);
+
+      component.openEdit(existing);
+
+      expect(component.form.controls.time.value).toBe('08:15');
+      expect(component.form.controls.reminder.value).toBe('120');
+      expect(component.reminderOptions()).toBe(REMINDER_OPTIONS);
+    });
+
+    it('oferece a antecedência atual mesmo quando não é uma das padrão', () => {
+      const existing = { ...appointment(1, daysFromNow(3)), time: '08:15', reminderMinutes: 90 };
+      create([existing]);
+
+      component.openEdit(existing);
+
+      expect(component.reminderOptions().some((o) => o.value === '90')).toBeTrue();
+
+      component.openCreate();
+      expect(component.reminderOptions()).toBe(REMINDER_OPTIONS);
+    });
+
+    it('leva o erro de lembrete do backend para o campo', () => {
+      create([]);
+      component.openCreate();
+      fillForm();
+      service.createAppointment.and.returnValue(
+        throwError(() => ({
+          status: 400,
+          message: 'Dados inválidos',
+          fieldErrors: { reminder: 'Informe o horário da consulta para configurar um lembrete' },
+        })),
+      );
+
+      component.save();
+
+      expect(component.form.controls.reminder.errors).toEqual({
+        server: 'Informe o horário da consulta para configurar um lembrete',
+      });
     });
   });
 

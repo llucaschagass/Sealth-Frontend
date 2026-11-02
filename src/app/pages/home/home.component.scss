@@ -97,3 +97,29 @@
     color: var(--color-text-muted);
   }
 }
+
+.reminders {
+  margin-bottom: var(--space-6);
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-warning-soft);
+  border: 1px solid var(--color-warning);
+  border-radius: var(--radius-md);
+
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+    font-size: var(--font-size-md);
+  }
+
+  &__list {
+    display: grid;
+    gap: var(--space-2);
+    list-style: none;
+  }
+
+  &__item a {
+    color: var(--color-text);
+  }
+}

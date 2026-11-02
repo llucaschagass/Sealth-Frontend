@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { ControlValueAccessor, NgControl, ValidationErrors } from '@angular/forms';
 
-type FieldType = 'text' | 'email' | 'password' | 'date' | 'number';
+type FieldType = 'text' | 'email' | 'password' | 'date' | 'time' | 'number';
 
 let nextId = 0;
 

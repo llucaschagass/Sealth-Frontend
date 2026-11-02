@@ -13,7 +13,8 @@ export type IconName =
   | 'external-link'
   | 'plus'
   | 'map-pin'
-  | 'log-out';
+  | 'log-out'
+  | 'clock';
 
 /** Ícones de traço (24x24, estilo Lucide) que herdam a cor do texto e são decorativos. */
 @Component({

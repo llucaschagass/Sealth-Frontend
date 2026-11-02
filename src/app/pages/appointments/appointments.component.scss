@@ -51,3 +51,8 @@ h2 {
     color: var(--color-text-muted);
   }
 }
+
+.field-error {
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+}
