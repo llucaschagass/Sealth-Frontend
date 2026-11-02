@@ -1,7 +1,23 @@
+h2 {
+  font-size: var(--font-size-lg);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
 .intro,
 .state {
-  margin-bottom: var(--space-5);
   color: var(--color-text-muted);
+}
+
+.state {
+  margin-bottom: var(--space-5);
 }
 
 .alert {
@@ -10,6 +26,101 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
+}
+
+.field-error {
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding-block: var(--space-6);
+  text-align: center;
+
+  p {
+    color: var(--color-text-muted);
+  }
+}
+
+.mine {
+  display: grid;
+  gap: var(--space-3);
+  list-style: none;
+
+  &__item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+
+    &--ended {
+      opacity: 0.75;
+    }
+  }
+
+  &__name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-md);
+  }
+
+  .badge {
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-pill);
+    background: var(--color-border);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+  }
+
+  &__dosage {
+    font-weight: var(--font-weight-medium);
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-1);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  &__time {
+    padding: 0 var(--space-2);
+    background: var(--color-primary-soft);
+    border-radius: var(--radius-sm);
+    color: var(--color-primary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__actions {
+    display: flex;
+    gap: var(--space-1);
+  }
+
+  &__delete {
+    color: var(--color-danger);
+  }
+}
+
+.leaflets {
+  margin-top: var(--space-7);
+
+  h2 {
+    margin-bottom: var(--space-1);
+  }
+
+  .intro {
+    margin-bottom: var(--space-5);
+  }
 }
 
 .medicines {

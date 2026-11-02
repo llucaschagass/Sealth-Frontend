@@ -11,7 +11,7 @@ Consome a API em [`../Sealth-Backend`](../Sealth-Backend).
 | Entrar / Criar conta    | `/login`, `/signup` | público | Autenticação com validação e erros por campo                    |
 | Início                  | `/home`             | logado  | Atalhos para as seções                                          |
 | Minhas consultas        | `/appointment`      | logado  | Criar, editar e cancelar consultas (próximas e anteriores)      |
-| Meus medicamentos       | `/medicines`        | logado  | Bulas em PDF                                                    |
+| Meus medicamentos       | `/medicines`        | logado  | Medicamentos em uso (dosagem e horários) e bulas em PDF         |
 | Informações importantes | `/info`             | logado  | Artigos de saúde                                                |
 | Minha saúde             | `/health`           | logado  | Calculadora (IMC, água, calorias, peso ideal) e histórico salvo |
 | Configurações           | `/config`           | logado  | Alterar nome, e-mail e senha                                    |

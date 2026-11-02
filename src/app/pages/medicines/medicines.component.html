@@ -1,32 +1,158 @@
 <app-shell title="Meus medicamentos">
-  <p class="intro">Consulte a bula em PDF dos medicamentos disponíveis.</p>
-
-  @if (loading()) {
-    <p class="state" role="status">Carregando medicamentos...</p>
-  } @else if (error()) {
-    <div class="alert alert--danger" role="alert">
-      <p>{{ error() }}</p>
-      <button type="button" class="btn btn--secondary" (click)="load()">Tentar novamente</button>
+  <section aria-labelledby="mine-title">
+    <div class="toolbar">
+      <div>
+        <h2 id="mine-title">Em uso</h2>
+        <p class="intro">Registre dosagem e horários dos medicamentos que você toma.</p>
+      </div>
+      <button type="button" class="btn btn--primary" (click)="openCreate()">
+        <app-icon name="plus" /> Novo medicamento
+      </button>
     </div>
-  } @else if (medicines().length === 0) {
-    <p class="state">Nenhum medicamento disponível no momento.</p>
-  } @else {
-    <ul class="medicines">
-      @for (medicine of medicines(); track medicine) {
-        <li class="card medicine">
-          <span class="medicine__icon"><app-icon name="pill" /></span>
-          <h2 class="medicine__name">{{ medicine }}</h2>
-          <a
-            class="btn btn--secondary"
-            [href]="pdfUrl(medicine)"
-            target="_blank"
-            rel="noopener noreferrer"
-            [attr.aria-label]="'Abrir bula de ' + medicine + ' em PDF (nova aba)'"
-          >
-            <app-icon name="download" /> Bula (PDF)
-          </a>
-        </li>
+
+    @if (mineLoading()) {
+      <p class="state" role="status">Carregando seus medicamentos...</p>
+    } @else if (mineError()) {
+      <div class="alert alert--danger" role="alert">
+        <p>{{ mineError() }}</p>
+        <button type="button" class="btn btn--secondary" (click)="loadMine()">
+          Tentar novamente
+        </button>
+      </div>
+    } @else if (mine().length === 0) {
+      <div class="card empty">
+        <h3>Você ainda não cadastrou medicamentos</h3>
+        <p>Cadastre o primeiro para não esquecer dosagem e horários.</p>
+      </div>
+    } @else {
+      <ul class="mine">
+        @for (item of mine(); track item.id) {
+          <li class="card mine__item" [class.mine__item--ended]="!item.active">
+            <div class="mine__body">
+              <h3 class="mine__name">
+                {{ item.name }}
+                @if (!item.active) {
+                  <span class="badge">Encerrado</span>
+                }
+              </h3>
+              <p class="mine__dosage">{{ item.dosage }}</p>
+              <p class="mine__meta">
+                <span class="visually-hidden">Horários:</span>
+                @for (time of item.times; track time) {
+                  <time class="mine__time">{{ time }}</time>
+                }
+              </p>
+              <p class="mine__meta">{{ period(item.startDate, item.endDate) }}</p>
+              @if (item.notes) {
+                <p class="mine__meta">{{ item.notes }}</p>
+              }
+            </div>
+            <div class="mine__actions">
+              <button
+                type="button"
+                class="btn btn--ghost"
+                [attr.aria-label]="'Editar ' + item.name"
+                (click)="openEdit(item)"
+              >
+                Editar
+              </button>
+              <button
+                type="button"
+                class="btn btn--ghost mine__delete"
+                [attr.aria-label]="'Excluir ' + item.name"
+                (click)="askDelete(item)"
+              >
+                Excluir
+              </button>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+
+  <section class="leaflets" aria-labelledby="leaflets-title">
+    <h2 id="leaflets-title">Bulas</h2>
+    <p class="intro">Consulte a bula em PDF dos medicamentos disponíveis.</p>
+
+    @if (loading()) {
+      <p class="state" role="status">Carregando bulas...</p>
+    } @else if (error()) {
+      <div class="alert alert--danger" role="alert">
+        <p>{{ error() }}</p>
+        <button type="button" class="btn btn--secondary" (click)="load()">Tentar novamente</button>
+      </div>
+    } @else if (medicines().length === 0) {
+      <p class="state">Nenhum medicamento disponível no momento.</p>
+    } @else {
+      <ul class="medicines">
+        @for (medicine of medicines(); track medicine) {
+          <li class="card medicine">
+            <span class="medicine__icon"><app-icon name="pill" /></span>
+            <h3 class="medicine__name">{{ medicine }}</h3>
+            <a
+              class="btn btn--secondary"
+              [href]="pdfUrl(medicine)"
+              target="_blank"
+              rel="noopener noreferrer"
+              [attr.aria-label]="'Abrir bula de ' + medicine + ' em PDF (nova aba)'"
+            >
+              <app-icon name="download" /> Bula (PDF)
+            </a>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+
+  <app-modal #formModal [heading]="editing() ? 'Editar medicamento' : 'Novo medicamento'">
+    <form class="form-stack" [formGroup]="form" (ngSubmit)="save()" novalidate>
+      @if (formError()) {
+        <p class="alert alert--danger" role="alert">{{ formError() }}</p>
       }
-    </ul>
-  }
+      <app-text-field formControlName="name" label="Nome" placeholder="Losartana" />
+      <app-text-field formControlName="dosage" label="Dosagem" placeholder="50 mg" />
+      <app-text-field
+        formControlName="times"
+        label="Horários"
+        placeholder="08:00, 20:00"
+        autocomplete="off"
+      />
+      <app-text-field formControlName="startDate" type="date" label="Início (opcional)" />
+      <app-text-field formControlName="endDate" type="date" label="Término (opcional)" />
+      @if (form.errors?.['period'] && form.touched) {
+        <p class="field-error" role="alert">{{ form.errors?.['period'] }}</p>
+      }
+      <app-text-field formControlName="notes" label="Observações (opcional)" />
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn--secondary" (click)="closeForm()">Cancelar</button>
+        <button type="submit" class="btn btn--primary" [disabled]="saving()">
+          {{ saving() ? 'Salvando...' : 'Salvar' }}
+        </button>
+      </div>
+    </form>
+  </app-modal>
+
+  <app-modal #deleteModal heading="Excluir medicamento?">
+    @if (toDelete(); as target) {
+      <p class="modal-text">
+        <strong>{{ target.name }}</strong> ({{ target.dosage }}) será removido da sua lista.
+      </p>
+    }
+    @if (deleteError()) {
+      <p class="alert alert--danger" role="alert">{{ deleteError() }}</p>
+    }
+    <div class="modal-actions">
+      <button type="button" class="btn btn--secondary" (click)="closeDelete()">Manter</button>
+      <button
+        type="button"
+        class="btn btn--danger"
+        [disabled]="deleting()"
+        (click)="confirmDelete()"
+      >
+        {{ deleting() ? 'Excluindo...' : 'Excluir' }}
+      </button>
+    </div>
+  </app-modal>
 </app-shell>
