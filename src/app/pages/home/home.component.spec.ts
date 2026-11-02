@@ -85,59 +85,59 @@ describe('HomeComponent', () => {
     }
   });
 
-  describe('lembretes', () => {
-    it('não mostra a seção quando não há lembretes em vigor', () => {
+  describe('avisos', () => {
+    const notices = () => Array.from(element().querySelectorAll<HTMLAnchorElement>('a.notice'));
+
+    it('não mostra o painel quando não há nada que peça atenção', () => {
       create();
 
-      expect(element().querySelector('.reminders')).toBeNull();
+      expect(element().querySelector('.notices')).toBeNull();
     });
 
-    it('lista as consultas com lembrete em vigor, com link para as consultas', () => {
+    it('mostra a consulta com lembrete em vigor, com link para as consultas', () => {
       service.getReminders.and.returnValue(of([reminder]));
       create();
 
-      const item = element().querySelector('.reminders__item a');
-      expect(item?.textContent).toContain('Dra. Souza');
-      expect(item?.textContent).toContain('1 de dezembro de 2026');
-      expect(item?.textContent).toContain('14:30');
-      expect(item?.getAttribute('href')).toBe('/appointment');
+      const [item] = notices();
+      expect(item.textContent).toContain('Consulta com Dra. Souza');
+      expect(item.textContent).toContain('Ortopedia');
+      expect(item.textContent).toContain('1 de dezembro às 14:30');
+      expect(item.getAttribute('href')).toBe('/appointment');
+      expect(item.getAttribute('data-tone')).toBe('info');
     });
 
-    it('segue sem a seção quando os lembretes não carregam', () => {
-      service.getReminders.and.returnValue(
-        throwError(() => ({ status: 0, message: 'Sem conexão.' })),
-      );
-      create();
-
-      expect(element().querySelector('.reminders')).toBeNull();
-      expect(element().querySelector('.sections')).not.toBeNull();
-    });
-  });
-
-  describe('alertas de vacinação', () => {
-    it('não mostra a seção quando nada pede atenção', () => {
-      create();
-
-      expect(element().querySelector('#vaccines-title')).toBeNull();
-    });
-
-    it('lista as vacinas que pedem atenção com um link para o calendário', () => {
+    it('mostra a vacina que pede atenção, com link para o calendário', () => {
       vaccines.getAlerts.and.returnValue(of([vaccineAlert]));
       create();
 
-      const item = element().querySelector('#vaccines-title ~ .reminders__list a');
-      expect(item?.textContent).toContain('Difteria e tétano (dT)');
-      expect(item?.textContent).toContain('reforço vencido');
-      expect(item?.getAttribute('href')).toBe('/vaccines');
+      const [item] = notices();
+      expect(item.textContent).toContain('Difteria e tétano (dT)');
+      expect(item.textContent).toContain('Venceu em 01/01/2025');
+      expect(item.textContent).toContain('Reforço vencido');
+      expect(item.getAttribute('href')).toBe('/vaccines');
+      expect(item.getAttribute('data-tone')).toBe('danger');
     });
 
-    it('segue sem a seção quando os alertas não carregam', () => {
+    it('junta os dois tipos num painel, com a contagem e o mais urgente primeiro', () => {
+      service.getReminders.and.returnValue(of([reminder]));
+      vaccines.getAlerts.and.returnValue(of([vaccineAlert]));
+      create();
+
+      expect(notices().map((a) => a.getAttribute('href'))).toEqual(['/vaccines', '/appointment']);
+      expect(element().querySelector('.notices__count')?.textContent).toContain('2');
+      expect(element().querySelector('#notices-title')?.textContent).toContain('Quadro de Avisos');
+    });
+
+    it('segue sem o painel quando os avisos não carregam', () => {
+      service.getReminders.and.returnValue(
+        throwError(() => ({ status: 0, message: 'Sem conexão.' })),
+      );
       vaccines.getAlerts.and.returnValue(
         throwError(() => ({ status: 0, message: 'Sem conexão.' })),
       );
       create();
 
-      expect(element().querySelector('#vaccines-title')).toBeNull();
+      expect(element().querySelector('.notices')).toBeNull();
       expect(element().querySelector('.sections')).not.toBeNull();
     });
   });

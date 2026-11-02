@@ -98,28 +98,106 @@
   }
 }
 
-.reminders {
+.notices {
   margin-bottom: var(--space-6);
-  padding: var(--space-4) var(--space-5);
-  background: var(--color-warning-soft);
-  border: 1px solid var(--color-warning);
-  border-radius: var(--radius-md);
 
-  h2 {
+  &__title {
     display: flex;
     align-items: center;
     gap: var(--space-2);
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--space-3);
     font-size: var(--font-size-md);
+  }
+
+  &__count {
+    min-width: 1.5rem;
+    padding: 0 var(--space-2);
+    background: var(--color-warning);
+    border-radius: var(--radius-pill);
+    color: var(--color-on-primary);
+    font-size: var(--font-size-sm);
+    text-align: center;
   }
 
   &__list {
     display: grid;
-    gap: var(--space-2);
+    gap: var(--space-3);
     list-style: none;
+
+    @include up(md) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}
+
+.notice {
+  --tone: var(--color-primary);
+  --tone-soft: var(--color-primary-soft);
+
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  height: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-inline-start: 0.3rem solid var(--tone);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-text);
+  text-decoration: none;
+  transition: border-color var(--transition);
+
+  &:hover {
+    border-color: var(--tone);
   }
 
-  &__item a {
-    color: var(--color-text);
+  &[data-tone='warning'] {
+    --tone: var(--color-warning);
+    --tone-soft: var(--color-warning-soft);
+  }
+
+  &[data-tone='danger'] {
+    --tone: var(--color-danger);
+    --tone-soft: var(--color-danger-soft);
+  }
+
+  &__icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--tone-soft);
+    border-radius: var(--radius-md);
+    color: var(--tone);
+    --icon-size: 1.25rem;
+  }
+
+  &__text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__title {
+    font-weight: var(--font-weight-medium);
+  }
+
+  &__detail {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  &__badge {
+    flex-shrink: 0;
+    padding: 0 var(--space-3);
+    background: var(--tone-soft);
+    border-radius: var(--radius-pill);
+    color: var(--tone);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    white-space: nowrap;
   }
 }
