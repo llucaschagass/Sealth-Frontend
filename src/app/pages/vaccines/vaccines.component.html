@@ -1,0 +1,181 @@
+<app-shell title="Minhas vacinas">
+  <div class="toolbar">
+    <p class="intro">
+      Acompanhe seu calendário de vacinação e registre as doses que você já tomou. É um resumo
+      informativo e não substitui a orientação de um profissional de saúde.
+    </p>
+    <button type="button" class="btn btn--primary" (click)="openDose()">
+      <app-icon name="plus" /> Registrar dose
+    </button>
+  </div>
+
+  @if (loading()) {
+    <p class="state" role="status">Carregando seu calendário...</p>
+  } @else if (loadError()) {
+    <div class="alert alert--danger retry" role="alert">
+      <p>{{ loadError() }}</p>
+      <button type="button" class="btn btn--secondary" (click)="load()">Tentar novamente</button>
+    </div>
+  } @else {
+    @if (overview(); as data) {
+      @if (data.ageYears === null) {
+        <p class="hint" role="status">
+          Ainda não sabemos sua idade, então mostramos todo o calendário. Salve uma medição em
+          <a routerLink="/health">Minha saúde</a> para ver só o que se aplica a você.
+        </p>
+      }
+
+      @if (groups().attention.length > 0) {
+        <section aria-labelledby="attention-title">
+          <h2 id="attention-title">Precisam de atenção</h2>
+          <ul class="list">
+            @for (vaccine of groups().attention; track vaccine.code) {
+              <li>
+                <ng-container
+                  [ngTemplateOutlet]="card"
+                  [ngTemplateOutletContext]="{ $implicit: vaccine }"
+                />
+              </li>
+            }
+          </ul>
+        </section>
+      } @else {
+        <p class="card empty">Tudo em dia por aqui. Nenhuma vacina pede atenção agora.</p>
+      }
+
+      @if (groups().upToDate.length > 0) {
+        <section aria-labelledby="uptodate-title">
+          <h2 id="uptodate-title">Em dia</h2>
+          <ul class="list">
+            @for (vaccine of groups().upToDate; track vaccine.code) {
+              <li>
+                <ng-container
+                  [ngTemplateOutlet]="card"
+                  [ngTemplateOutletContext]="{ $implicit: vaccine }"
+                />
+              </li>
+            }
+          </ul>
+        </section>
+      }
+
+      @if (groups().notApplicable.length > 0) {
+        <section aria-labelledby="na-title">
+          <h2 id="na-title">Fora da sua faixa de idade</h2>
+          <ul class="list">
+            @for (vaccine of groups().notApplicable; track vaccine.code) {
+              <li>
+                <ng-container
+                  [ngTemplateOutlet]="card"
+                  [ngTemplateOutletContext]="{ $implicit: vaccine }"
+                />
+              </li>
+            }
+          </ul>
+        </section>
+      }
+    }
+
+    <section aria-labelledby="history-title">
+      <h2 id="history-title">Doses registradas</h2>
+      @if (records().length === 0) {
+        <p class="card empty">Você ainda não registrou nenhuma dose.</p>
+      } @else {
+        <ul class="list">
+          @for (record of records(); track record.id) {
+            <li class="card record">
+              <div>
+                <strong>{{ record.vaccineName }}</strong>
+                <span class="record__date">{{ formatDate(record.takenAt) }}</span>
+              </div>
+              <button
+                type="button"
+                class="btn btn--ghost record__delete"
+                [attr.aria-label]="
+                  'Excluir dose de ' + record.vaccineName + ' de ' + formatDate(record.takenAt)
+                "
+                (click)="askDelete(record)"
+              >
+                Excluir
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  }
+
+  <ng-template #card let-vaccine>
+    <article class="card vaccine" [attr.data-status]="vaccine.status">
+      <div class="vaccine__body">
+        <h3 class="vaccine__name">
+          {{ vaccine.name }}
+          <span class="badge" [attr.data-status]="vaccine.status">{{
+            statusLabel(vaccine.status)
+          }}</span>
+        </h3>
+        <p>{{ vaccine.description }}</p>
+        <p class="vaccine__meta">
+          {{ dosesSummary(vaccine) }}
+          @if (vaccine.lastDoseAt) {
+            · última dose em {{ formatDate(vaccine.lastDoseAt) }}
+          }
+          @if (vaccine.nextDueDate) {
+            · reforço em {{ formatDate(vaccine.nextDueDate) }}
+          }
+        </p>
+        @if (vaccine.notice) {
+          <p class="vaccine__notice"><app-icon name="bell" /> {{ vaccine.notice }}</p>
+        }
+      </div>
+      <button
+        type="button"
+        class="btn btn--secondary"
+        [attr.aria-label]="'Registrar dose de ' + vaccine.name"
+        (click)="openDose(vaccine)"
+      >
+        Registrar dose
+      </button>
+    </article>
+  </ng-template>
+
+  <app-modal #doseModal heading="Registrar dose">
+    <form class="form-stack" [formGroup]="form" (ngSubmit)="save()" novalidate>
+      @if (formError()) {
+        <p class="alert alert--danger" role="alert">{{ formError() }}</p>
+      }
+      <app-select-field formControlName="vaccineCode" label="Vacina" [options]="vaccineOptions()" />
+      <app-text-field formControlName="takenAt" type="date" label="Data da dose" />
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn--secondary" (click)="closeDose()">Cancelar</button>
+        <button type="submit" class="btn btn--primary" [disabled]="saving()">
+          {{ saving() ? 'Salvando...' : 'Salvar' }}
+        </button>
+      </div>
+    </form>
+  </app-modal>
+
+  <app-modal #deleteModal heading="Excluir dose?">
+    @if (toDelete(); as target) {
+      <p class="modal-text">
+        A dose de <strong>{{ target.vaccineName }}</strong> de
+        <strong>{{ formatDate(target.takenAt) }}</strong> será removida.
+      </p>
+    }
+    @if (deleteError()) {
+      <p class="alert alert--danger" role="alert">{{ deleteError() }}</p>
+    }
+    <div class="modal-actions">
+      <button type="button" class="btn btn--secondary" (click)="closeDelete()">Manter</button>
+      <button
+        type="button"
+        class="btn btn--danger"
+        [disabled]="deleting()"
+        (click)="confirmDelete()"
+      >
+        {{ deleting() ? 'Excluindo...' : 'Excluir' }}
+      </button>
+    </div>
+  </app-modal>
+</app-shell>

@@ -11,6 +11,7 @@ const ERROR_MESSAGES: Record<string, (error: unknown) => string> = {
   minlength: (error) =>
     `Mínimo de ${(error as { requiredLength: number }).requiredLength} caracteres`,
   mismatch: () => 'As senhas não coincidem',
+  future: () => 'A data não pode ser futura',
   times: () => 'Use horários HH:mm separados por vírgula (máximo de 12)',
   number: () => 'Informe um número',
   range: (error) => {

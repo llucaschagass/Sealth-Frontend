@@ -84,6 +84,7 @@ describe('TextFieldComponent', () => {
       [{ minlength: { requiredLength: 6, actualLength: 2 } }, 'Mínimo de 6 caracteres'],
       [{ mismatch: true }, 'As senhas não coincidem'],
       [{ number: true }, 'Informe um número'],
+      [{ future: true }, 'A data não pode ser futura'],
       [{ times: true }, 'Use horários HH:mm separados por vírgula'],
       [{ range: { min: 20, max: 400 } }, 'Informe um valor entre 20 e 400'],
       [{ algoNaoMapeado: true }, 'Valor inválido'],

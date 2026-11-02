@@ -2,7 +2,7 @@ import { Route } from '@angular/router';
 import { routes } from './app.routes';
 import { authGuard } from './core/auth.guard';
 
-const PROTECTED = ['home', 'info', 'config', 'health', 'appointment', 'medicines'];
+const PROTECTED = ['home', 'info', 'config', 'health', 'appointment', 'medicines', 'vaccines'];
 const PUBLIC = ['', 'login', 'signup'];
 
 const byPath = (path: string): Route => routes.find((r) => r.path === path)!;

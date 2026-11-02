@@ -55,5 +55,12 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/medicines/medicines.component').then((m) => m.MedicinesComponent),
   },
+  {
+    path: 'vaccines',
+    title: 'Minhas vacinas | Sealth',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/vaccines/vaccines.component').then((m) => m.VaccinesComponent),
+  },
   { path: '**', redirectTo: '' },
 ];

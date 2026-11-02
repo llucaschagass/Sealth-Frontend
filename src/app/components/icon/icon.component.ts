@@ -14,7 +14,8 @@ export type IconName =
   | 'plus'
   | 'map-pin'
   | 'log-out'
-  | 'clock';
+  | 'clock'
+  | 'syringe';
 
 /** Ícones de traço (24x24, estilo Lucide) que herdam a cor do texto e são decorativos. */
 @Component({

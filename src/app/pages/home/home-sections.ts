@@ -21,6 +21,12 @@ export const HOME_SECTIONS: readonly HomeSection[] = [
     icon: 'pill',
   },
   {
+    title: 'Minhas vacinas',
+    description: 'Veja seu calendário de vacinação e registre as doses tomadas.',
+    path: '/vaccines',
+    icon: 'syringe',
+  },
+  {
     title: 'Informações importantes',
     description: 'Artigos e alertas sobre campanhas e cuidados com a saúde.',
     path: '/info',

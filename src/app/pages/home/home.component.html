@@ -29,6 +29,22 @@
     </section>
   }
 
+  @if (vaccineAlerts().length > 0) {
+    <section class="reminders" aria-labelledby="vaccines-title">
+      <h2 id="vaccines-title"><app-icon name="syringe" /> Vacinas</h2>
+      <ul class="reminders__list">
+        @for (item of vaccineAlerts(); track item.code) {
+          <li class="reminders__item">
+            <a routerLink="/vaccines">
+              <strong>{{ item.name }}</strong
+              >: {{ statusLabels[item.status].toLowerCase() }}
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
   <nav aria-label="Seções do aplicativo">
     <ul class="sections">
       @for (section of sections; track section.path) {

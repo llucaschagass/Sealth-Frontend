@@ -78,6 +78,22 @@ describe('SelectFieldComponent', () => {
     expect(select().disabled).toBeTrue();
   });
 
+  it('pede uma escolha quando o campo é obrigatório e está vazio', () => {
+    host.control.setErrors({ required: true });
+    host.control.markAsTouched();
+    fixture.detectChanges();
+
+    expect(error()?.textContent).toContain('Selecione uma opção');
+  });
+
+  it('ignora erros desconhecidos', () => {
+    host.control.setErrors({ outro: true });
+    host.control.markAsTouched();
+    fixture.detectChanges();
+
+    expect(error()).toBeNull();
+  });
+
   it('exibe o erro do servidor somente após interação e o liga por aria', () => {
     host.control.setErrors({ server: 'Valor recusado' });
     fixture.detectChanges();

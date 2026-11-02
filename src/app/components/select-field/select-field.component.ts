@@ -35,11 +35,16 @@ export class SelectFieldComponent implements ControlValueAccessor {
     }
   }
 
-  /** Erro devolvido pelo servidor para este campo, exibido após o usuário interagir. */
+  /** Erro do servidor ou de preenchimento obrigatório, exibido após o usuário interagir. */
   get errorMessage(): string | null {
     const control = this.control?.control;
-    const server = control?.errors?.['server'];
-    return server && (control.touched || control.dirty) ? String(server) : null;
+    if (!control?.errors || !(control.touched || control.dirty)) {
+      return null;
+    }
+    if (control.errors['server']) {
+      return String(control.errors['server']);
+    }
+    return control.errors['required'] ? 'Selecione uma opção' : null;
   }
 
   onSelect(event: Event): void {

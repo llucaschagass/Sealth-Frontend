@@ -12,6 +12,7 @@ Consome a API em [`../Sealth-Backend`](../Sealth-Backend).
 | Início                  | `/home`             | logado  | Atalhos para as seções                                          |
 | Minhas consultas        | `/appointment`      | logado  | Criar, editar e cancelar consultas, com horário e lembrete      |
 | Meus medicamentos       | `/medicines`        | logado  | Medicamentos em uso (dosagem e horários) e bulas em PDF         |
+| Minhas vacinas          | `/vaccines`         | logado  | Calendário de vacinação, doses registradas e alertas            |
 | Informações importantes | `/info`             | logado  | Artigos de saúde                                                |
 | Minha saúde             | `/health`           | logado  | Calculadora (IMC, água, calorias, peso ideal) e histórico salvo |
 | Configurações           | `/config`           | logado  | Alterar nome, e-mail e senha                                    |

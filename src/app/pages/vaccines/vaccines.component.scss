@@ -1,0 +1,134 @@
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.intro,
+.state {
+  max-width: 44rem;
+  color: var(--color-text-muted);
+}
+
+.hint {
+  margin-bottom: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-primary-soft);
+  border: 1px solid var(--color-primary-border);
+  border-radius: var(--radius-md);
+}
+
+section + section,
+.empty {
+  margin-top: var(--space-6);
+}
+
+section h2 {
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-lg);
+}
+
+.alert {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.empty {
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.list {
+  display: grid;
+  gap: var(--space-3);
+  list-style: none;
+}
+
+.vaccine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+
+  &[data-status='NOT_APPLICABLE'] {
+    background: var(--color-bg);
+    color: var(--color-text-muted);
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 14rem;
+  }
+
+  &__name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-md);
+  }
+
+  &__meta {
+    margin-top: var(--space-1);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  &__notice {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-1);
+    color: var(--color-warning);
+    font-size: var(--font-size-sm);
+  }
+}
+
+.badge {
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-hover);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+
+  &[data-status='DUE'] {
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
+  }
+
+  &[data-status='PENDING'],
+  &[data-status='SOON'] {
+    background: var(--color-warning-soft);
+    color: var(--color-warning);
+  }
+
+  &[data-status='NOT_APPLICABLE'] {
+    background: var(--color-border);
+    color: var(--color-text-muted);
+  }
+}
+
+.record {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+
+  &__date {
+    display: block;
+    color: var(--color-text-muted);
+  }
+
+  &__delete {
+    color: var(--color-danger);
+  }
+}
